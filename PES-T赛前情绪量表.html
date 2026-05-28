@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PES-T 赛前情绪量表</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+    background: #f5f7fa;
+    color: #1a2332;
+    padding: 16px;
+  }
+  .container { max-width: 640px; margin: 0 auto; }
+  .header {
+    background: linear-gradient(135deg, #2d1b69, #6b3fa0);
+    color: #fff;
+    border-radius: 12px;
+    padding: 20px 18px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .header h1 { font-size: 20px; font-weight: 700; }
+  .header p { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 18px 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+  }
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #2d1b69;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 12px;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    background: #2d1b69; color: #fff; padding: 6px 4px;
+    text-align: center; font-weight: 600; font-size: 12px;
+  }
+  tbody td {
+    padding: 6px 4px; text-align: center; border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
+  tbody tr:hover { background: #F8F6FF; }
+  .q-text { text-align: left; font-size: 13px; padding-left: 6px; }
+  .dim-label { font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 4px; display: inline-block; }
+  .dim-自信 { background: #E8F5E9; color: #2e7d32; }
+  .dim-躯体焦虑 { background: #FFF3E0; color: #E65100; }
+  .dim-个体失败焦虑 { background: #FFEBEE; color: #c62828; }
+  .dim-社会期待焦虑 { background: #F3E5F5; color: #6b3fa0; }
+
+  .radio-cell input { width: 16px; height: 16px; cursor: pointer; accent-color: #6b3fa0; }
+
+  .score-section { margin-top: 16px; }
+  .score-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px; border-bottom: 1px solid #e2e8f0;
+  }
+  .score-row:last-child { border-bottom: none; }
+  .score-label { font-size: 14px; font-weight: 700; }
+  .score-input {
+    width: 60px; padding: 6px 8px; border: 1px solid #ddd6f3; border-radius: 6px;
+    text-align: center; font-size: 16px; font-weight: 700; color: #2d1b69;
+  }
+  .score-input:focus { outline: 2px solid #6b3fa0; border-color: transparent; }
+
+  .btn {
+    display: block; width: 100%; padding: 14px;
+    border: none; border-radius: 10px; font-size: 16px; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: all 0.2s;
+    background: #6b3fa0; color: #fff; margin: 16px 0;
+  }
+  .btn:hover { background: #2d1b69; }
+
+  .result-box {
+    background: #F3EEFF; border-radius: 10px; padding: 16px;
+    margin: 12px 0; display: none;
+  }
+  .result-box.show { display: block; }
+  .result-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid #ddd6f3;
+  }
+  .result-item:last-child { border-bottom: none; }
+  .result-score { font-size: 22px; font-weight: 800; color: #2d1b69; }
+
+  .hint {
+    font-size: 12px; color: #94a3b8; text-align: center;
+    padding: 10px 0; line-height: 1.6;
+  }
+
+  @media (max-width: 480px) {
+    table { font-size: 12px; }
+    thead th { font-size: 11px; padding: 4px 2px; }
+    tbody td { padding: 4px 2px; }
+    .q-text { font-size: 12px; }
+    .radio-cell input { width: 14px; height: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>赛前情绪量表（PES-T）</h1>
+  <p>请根据你通常在比赛前的真实感受，为每道题选择一个分值</p>
+</div>
+
+<div class="card">
+  <div class="card-title">📋 量表题目</div>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:5%;">#</th>
+        <th style="width:34%;">题目</th>
+        <th style="width:8%;">1</th>
+        <th style="width:8%;">2</th>
+        <th style="width:8%;">3</th>
+        <th style="width:8%;">4</th>
+        <th style="width:8%;">5</th>
+        <th style="width:8%;">6</th>
+        <th style="width:13%;">维度</th>
+      </tr>
+    </thead>
+    <tbody id="pesBody"></tbody>
+  </table>
+  <div style="text-align:center;font-size:11px;color:#94a3b8;margin-top:8px;">
+    1=从来没有　2=很少　3=有时　4=经常　5=很经常　6=总是
+  </div>
+</div>
+
+<button class="btn" onclick="calcScore()">📊 查看测评结果</button>
+
+<div class="card score-section">
+  <div class="card-title">📐 计分与解读</div>
+  <div class="result-box" id="resultBox">
+    <div class="result-item">
+      <span class="score-label">✅ 自信水平</span>
+      <span><span class="result-score" id="r1">0</span><span style="font-size:13px;color:#64748b;"> 分</span></span>
+    </div>
+    <div class="result-item">
+      <span class="score-label">😰 躯体焦虑</span>
+      <span><span class="result-score" id="r2">0</span><span style="font-size:13px;color:#64748b;"> 分</span></span>
+    </div>
+    <div class="result-item">
+      <span class="score-label">😟 个体失败焦虑</span>
+      <span><span class="result-score" id="r3">0</span><span style="font-size:13px;color:#64748b;"> 分</span></span>
+    </div>
+    <div class="result-item">
+      <span class="score-label">🤔 社会期待焦虑</span>
+      <span><span class="result-score" id="r4">0</span><span style="font-size:13px;color:#64748b;"> 分</span></span>
+    </div>
+    <div id="resultText" style="margin-top:12px;padding:12px;background:#fff;border-radius:8px;font-size:13px;line-height:1.7;"></div>
+  </div>
+
+  <div style="margin-top:12px;font-size:12px;color:#94a3b8;line-height:1.8;">
+    <p><strong>计分方法：</strong></p>
+    <p>自信水平 = 第1 + 5 + 9 + 13题（4-24分，越高越自信）</p>
+    <p>躯体焦虑 = 第2 + 6 + 10 + 14题（4-24分，≥17分偏高）</p>
+    <p>个体失败焦虑 = 第3 + 7 + 11 + 15题（4-24分，≥17分偏高）</p>
+    <p>社会期待焦虑 = 第4 + 8 + 12 + 16题（4-24分，≥17分偏高）</p>
+  </div>
+</div>
+
+<div class="hint">
+  ⚠️ 以上结果仅供参考，不能作为临床诊断依据。<br>
+  如果焦虑水平持续偏高并影响训练生活，建议寻求专业心理帮助。
+</div>
+
+</div>
+
+<script>
+const items = [
+  [1, '我感到对比赛有信心', '自信'],
+  [2, '我感到疲乏无力', '躯体焦虑'],
+  [3, '我担心失败', '个体失败焦虑'],
+  [4, '我担心我的朋友会怎么想怎么说', '社会期待焦虑'],
+  [5, '我有信心面对比赛的挑战', '自信'],
+  [6, '我感到心神不安', '躯体焦虑'],
+  [7, '我担心对手比我强', '个体失败焦虑'],
+  [8, '我担心会让我的朋友失望', '社会期待焦虑'],
+  [9, '我很有信心，因为我在内心已达到自己的目标', '自信'],
+  [10, '我感到烦躁', '躯体焦虑'],
+  [11, '我担心发挥不好', '个体失败焦虑'],
+  [12, '我担心会让队友失望', '社会期待焦虑'],
+  [13, '我对自己充满信心', '自信'],
+  [14, '我感到全身发软', '躯体焦虑'],
+  [15, '我担心比不过对手', '个体失败焦虑'],
+  [16, '我担心教练会怎么想怎么说', '社会期待焦虑'],
+];
+
+const dims = ['自信','躯体焦虑','个体失败焦虑','社会期待焦虑'];
+
+function render() {
+  const tbody = document.getElementById('pesBody');
+  items.forEach(d => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td style="font-weight:600;color:#6b3fa0;">'+d[0]+'</td><td class="q-text">'+d[1]+'</td>';
+    for (let v = 1; v <= 6; v++) {
+      tr.innerHTML += '<td class="radio-cell"><input type="radio" name="q'+d[0]+'" value="'+v+'"></td>';
+    }
+    tr.innerHTML += '<td><span class="dim-label dim-'+d[2].replace(/\//g,'')+'">'+d[2]+'</span></td>';
+    tbody.appendChild(tr);
+  });
+}
+
+function calcScore() {
+  const scores = {};
+  dims.forEach(d => scores[d] = 0);
+  let allDone = true;
+
+  items.forEach(d => {
+    const radios = document.querySelectorAll('input[name="q'+d[0]+'"]');
+    let checked = false;
+    radios.forEach(r => { if (r.checked) { checked = true; scores[d[2]] += parseInt(r.value); } });
+    if (!checked) allDone = false;
+  });
+
+  if (!allDone) { alert('请完成所有16道题后再查看结果。'); return; }
+
+  ['自信','躯体焦虑','个体失败焦虑','社会期待焦虑'].forEach((d,i) => {
+    document.getElementById('r'+(i+1)).textContent = scores[d];
+  });
+
+  const highs = [];
+  ['躯体焦虑','个体失败焦虑','社会期待焦虑'].forEach(d => {
+    if (scores[d] >= 17) highs.push(d);
+  });
+
+  let txt = '';
+  if (highs.length > 0) txt += '你的 <strong>' + highs.join('和') + '</strong> 得分偏高，建议优先关注对应调节方法。<br>';
+  else txt += '你的各项焦虑得分在正常范围内。继续保持你的赛前心理状态。<br>';
+  if (scores['自信'] <= 12) txt += '自信水平偏低，建议在日常训练中积累成功体验。<br>';
+  else txt += '自信水平良好。<br>';
+
+  document.getElementById('resultText').innerHTML = txt;
+  document.getElementById('resultBox').classList.add('show');
+  document.getElementById('resultBox').scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+render();
+</script>
+</body>
+</html>
