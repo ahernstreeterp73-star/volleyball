@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏐 排球规则测验</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Microsoft YaHei', '微软雅黑', sans-serif;
+    background: #f0f4f8;
+    color: #1a2332;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container { max-width: 720px; margin: 0 auto; padding-bottom: 80px; }
+
+  .header {
+    text-align: center;
+    padding: 28px 20px 20px;
+    background: linear-gradient(135deg, #1F4E79, #2E75B6);
+    border-radius: 16px;
+    color: #fff;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(31,78,121,0.25);
+  }
+  .header h1 { font-size: 24px; font-weight: 700; letter-spacing: 1px; }
+  .header p { font-size: 14px; opacity: 0.85; margin-top: 6px; }
+  .header .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  .header .badge-num {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-top: 8px;
+  }
+
+  .progress-wrap {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .progress-bar {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .progress-bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2E75B6, #4A9BDB);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #64748b;
+  }
+  .progress-info .score { color: #1F4E79; font-weight: 700; }
+
+  .round-badge { text-align: center; margin-bottom: 12px; }
+  .round-badge span {
+    display: inline-block;
+    background: #fff;
+    border: 2px solid #2E75B6;
+    color: #2E75B6;
+    padding: 4px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .round-badge .r2 { border-color: #CC0000; color: #CC0000; }
+
+  .question-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 24px 24px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .q-number {
+    font-size: 13px;
+    color: #2E75B6;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .q-tags { margin-bottom: 10px; }
+  .q-tags .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    margin-right: 4px;
+  }
+  .tag-tech { background: #E8F4FD; color: #2E75B6; }
+  .tag-rule { background: #FCE4EC; color: #880E4F; }
+  .tag-rule { background: #FCE4EC; color: #880E4F; }
+  .tag-bump { background: #E8F4FD; color: #2E75B6; }
+  .tag-set { background: #FFF3E0; color: #E65100; }
+  .tag-spike { background: #FFEBEE; color: #C62828; }
+  .tag-serve { background: #E8F5E9; color: #2E7D32; }
+  .tag-block { background: #F3E5F5; color: #6A1B9A; }
+  .tag-defense { background: #E0F7FA; color: #00695C; }
+  .tag-footwork { background: #FCE4EC; color: #880E4F; }
+
+  .q-text {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.6;
+    margin-bottom: 18px;
+    color: #1a2332;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .option:hover:not(.disabled) { border-color: #2E75B6; background: #F5F9FF; }
+  .option .letter {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: #64748b;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .option .letter.square { border-radius: 4px; }
+  .option.selected { border-color: #2E75B6; background: #EBF4FF; }
+  .option.selected .letter { background: #2E75B6; color: #fff; }
+  .option.correct { border-color: #16a34a; background: #F0FFF4; }
+  .option.correct .letter { background: #16a34a; color: #fff; }
+  .option.wrong { border-color: #dc2626; background: #FFF5F5; }
+  .option.wrong .letter { background: #dc2626; color: #fff; }
+  .option.disabled { cursor: default; opacity: 0.95; }
+  .option.show-correct { border-color: #16a34a; background: #F0FFF4; }
+  .option.show-correct .letter { background: #16a34a; color: #fff; }
+  .multi-hint { font-size: 12px; color: #E65100; background: #FFF3E0; display: inline-block; padding: 2px 10px; border-radius: 8px; margin-left: 8px; }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct { background: #F0FFF4; border: 1px solid #bbf7d0; color: #166534; }
+  .feedback.wrong { background: #FFF5F5; border: 1px solid #fecaca; color: #991b1b; }
+  .feedback .explain { margin-top: 6px; font-size: 13px; color: #4b5563; }
+
+  .pad-fill { color: transparent; user-select: none; pointer-events: none; }
+
+  .btn-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: 12px 20px 16px;
+    background: linear-gradient(to top, rgba(255,255,255,0.95) 60%, rgba(255,255,255,0));
+    z-index: 50;
+    pointer-events: none;
+  }
+  .btn-area .btn {
+    pointer-events: auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .btn {
+    display: inline-block;
+    padding: 12px 40px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .btn-primary { background: #2E75B6; color: #fff; }
+  .btn-primary:hover { background: #1F4E79; transform: translateY(-1px); }
+  .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+  .btn-success { background: #16a34a; color: #fff; }
+  .btn-success:hover { background: #15803d; }
+  .btn-outline { background: #fff; color: #2E75B6; border: 2px solid #2E75B6; }
+  .btn-outline:hover { background: #F5F9FF; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 36px 24px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    display: none;
+  }
+  .result-card.show { display: block; }
+  .result-card .big-score { font-size: 56px; font-weight: 800; color: #1F4E79; }
+  .result-card .label { font-size: 16px; color: #64748b; margin: 4px 0 16px; }
+  .result-card .detail { font-size: 14px; color: #4b5563; line-height: 1.8; }
+  .result-card .detail span { font-weight: 700; }
+  .result-card .breakdown { margin-top: 16px; font-size: 13px; color: #64748b; }
+  .result-card .btn { margin-top: 20px; }
+
+  .wrong-topic-list {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: #FFF8F0;
+    border-radius: 10px;
+    border: 1px solid #fed7aa;
+    display: none;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .wrong-topic-list.show { display: block; }
+  .wrong-topic-list strong { color: #c2410c; }
+
+  .hidden { display: none; }
+
+  /* Login overlay */
+  .login-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15,23,42,0.7);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999;
+    backdrop-filter: blur(4px);
+  }
+  .login-overlay.hidden { display: none; }
+  .login-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 36px 32px;
+    width: 380px;
+    max-width: 90vw;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: slideUp 0.35s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .login-icon { font-size: 48px; margin-bottom: 8px; }
+  .login-card h2 { font-size: 22px; color: #1F4E79; margin-bottom: 2px; }
+  .login-sub { font-size: 13px; color: #64748b; margin-bottom: 24px; }
+  .login-form { display: flex; flex-direction: column; gap: 12px; }
+  .login-form label { font-size: 14px; font-weight: 600; color: #1a2332; text-align: left; }
+  .login-form input {
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: center;
+  }
+  .login-form input:focus { border-color: #2E75B6; }
+  .login-form input::placeholder { color: #94a3b8; }
+  .login-info {
+    display: flex; justify-content: center; gap: 20px;
+    font-size: 13px; color: #64748b; padding: 4px 0;
+  }
+  .login-form .btn { margin-top: 8px; width: 100%; padding: 14px; font-size: 16px; }
+  .login-form .btn:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+
+  /* Result header */
+  .result-header {
+    display: flex; align-items: center; gap: 14px;
+    background: #F0F7FF;
+    border: 1px solid #D6E4F0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    text-align: left;
+  }
+  .result-stamp { font-size: 36px; }
+  .result-meta { display: flex; flex-direction: column; gap: 2px; }
+  .result-meta span:first-child {
+    font-size: 16px; font-weight: 700; color: #1F4E79;
+  }
+  .result-meta span:last-child {
+    font-size: 12px; color: #64748b;
+  }
+  .result-footer-note {
+    margin-top: 14px;
+    font-size: 11px;
+    color: #94a3b8;
+    border-top: 1px dashed #e2e8f0;
+    padding-top: 14px;
+  }
+
+  @media (max-width: 480px) {
+    .container { padding: 0 12px 80px; }
+    .question-card { padding: 20px 16px; }
+    .q-text { font-size: 16px; }
+    .option { font-size: 14px; padding: 11px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="container" id="app">
+
+  <!-- Login overlay -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+      <div class="login-icon">🏐</div>
+      <h2>排球技术测验</h2>
+      <p class="login-sub">排球 · 竞赛规则测试</p>
+      <div class="login-form">
+        <label>请输入你的姓名</label>
+        <input type="text" id="nameInput" placeholder="输入姓名后点击开始" maxlength="20" autocomplete="off">
+        <div class="login-info">
+          <span>📅 <span id="loginDate"></span></span>
+          <span>⏰ <span id="loginTime"></span></span>
+        </div>
+        <button class="btn btn-primary" id="startBtn" onclick="startQuiz()" disabled>开始测验</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="header">
+    <h1>🏐 排球规则测验</h1>
+    <p>排球 · 竞赛规则测试</p>
+    <div class="badge" id="studentNameBadge"></div>
+    <div class="badge" id="roundLabel" style="display:none;"></div>
+    <div class="badge-num">题库共 <span id="totalQCount">150</span> 道规则题 · 每次随机20道</div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-info">
+      <span id="progressText">第 1 / 20 题</span>
+      <span class="score">✅ <span id="correctCount">0</span>  ❌ <span id="wrongCount">0</span></span>
+    </div>
+  </div>
+
+  <div class="round-badge" id="roundIndicator">
+    <span id="roundTag">📖 随机抽题</span>
+  </div>
+
+  <div class="question-card" id="questionCard">
+    <div class="q-number" id="qNumber">第 1 题</div>
+    <div class="q-tags" id="qTags"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback">
+      <div class="fb-text" id="fbText"></div>
+      <div class="explain" id="fbExplain"></div>
+    </div>
+  </div>
+
+  <div class="btn-area" id="btnArea">
+    <button class="btn btn-primary" id="nextBtn" disabled onclick="handleNext()">提交答案</button>
+  </div>
+
+  <div class="wrong-topic-list" id="wrongTopicList"></div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <div class="result-stamp" id="resultStamp">🏆</div>
+      <div class="result-meta">
+        <span id="resultName"></span>
+        <span id="resultDateTime"></span>
+      </div>
+    </div>
+    <div class="big-score" id="finalScore">0</div>
+    <div class="label">答对 / 20 题</div>
+    <div class="detail" id="resultDetail"></div>
+    <div class="breakdown" id="resultBreakdown"></div>
+    <div class="result-footer-note">⏱ 本次测试完成时间已记录，不可重复使用同一截图</div>
+    <button class="btn btn-outline" onclick="goHome()">🏠 返回首页</button>
+    <button class="btn btn-success hidden" id="retryBtn" onclick="startRound2()">📝 针对薄弱环节再测</button>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+{id:1,tags:['规则'],tagType:'rule',question:'标准排球场的尺寸是多少？',options:['16m×8m','18m×9m','20m×10m','15m×7.5m'],answer:1,explain:'[规则1.1]'},
+{id:2,tags:['规则'],tagType:'rule',question:'球网高度男子和女子分别是多少？',options:['男子2.35m女子2.15m','男子2.43m女子2.24m','男子2.50m女子2.30m','男子2.40m女子2.20m'],answer:1,explain:'[规则2.1.1]'},
+{id:3,tags:['规则'],tagType:'rule',question:'标志杆的长度和超出球网的高度是多少？',options:['长1.50m超出60cm','长1.80m超出80cm','长2.00m超出100cm','长1.60m超出70cm'],answer:1,explain:'[规则2.4]'},
+{id:4,tags:['规则'],tagType:'rule',question:'比赛用球的标准周长和重量是多少？',options:['63-65cm 240-260g','65-67cm 260-280g','67-69cm 280-300g','64-66cm 250-270g'],answer:1,explain:'[规则3.1]'},
+{id:5,tags:['规则'],tagType:'rule',question:'球的内压标准是多少？',options:['0.20-0.25kg/cm²','0.30-0.325kg/cm²','0.35-0.40kg/cm²','0.25-0.30kg/cm²'],answer:1,explain:'[规则3.1]'},
+{id:6,tags:['规则'],tagType:'rule',question:'球网高度是从哪里测量的？',options:['从边线处','从场地中心','从端线处','从标志杆处'],answer:0,explain:'[规则2.1.2]'},
+{id:7,tags:['规则'],tagType:'rule',question:'球网宽多少米？',options:['0.8m','1m','1.2m','0.9m'],answer:1,explain:'[规则2.2]'},
+{id:8,tags:['规则'],tagType:'rule',question:'标志杆颜色条纹间隔多少厘米？',options:['5cm','10cm','15cm','20cm'],answer:1,explain:'[规则2.4]'},
+{id:9,tags:['规则'],tagType:'rule',question:'场地所有线条的宽度是多少厘米？',options:['3cm','5cm','8cm','10cm'],answer:1,explain:'[规则1.3.1]'},
+{id:10,tags:['规则'],tagType:'rule',question:'FIVB赛事边线外自由区宽度是多少？',options:['3m','5m','6.5m','8m'],answer:1,explain:'[规则1.1]'},
+{id:11,tags:['规则'],tagType:'rule',question:'FIVB赛事端线外自由区宽度是多少？',options:['3m','5m','6.5m','8m'],answer:2,explain:'[规则1.1]'},
+{id:12,tags:['规则'],tagType:'rule',question:'比赛场地上方无障碍区最低高度？',options:['5m','7m','10m','12.5m'],answer:1,explain:'[规则1.1]'},
+{id:13,tags:['规则'],tagType:'rule',question:'FIVB赛事无障碍区最低高度？',options:['7m','10m','12.5m','15m'],answer:2,explain:'[规则1.1]'},
+{id:14,tags:['规则'],tagType:'rule',question:'比赛场地最低照明标准？',options:['100勒克斯','300勒克斯','500勒克斯','1000勒克斯'],answer:1,explain:'[规则1.6]'},
+{id:15,tags:['规则'],tagType:'rule',question:'FIVB赛事场地照明标准？',options:['500勒克斯','1000勒克斯','2000勒克斯','3000勒克斯'],answer:2,explain:'[规则1.6]'},
+{id:16,tags:['规则'],tagType:'rule',question:'每场比赛每队最多可报多少名队员？',options:['10名','12名','14名','16名'],answer:1,explain:'[规则4.1.1]'},
+{id:17,tags:['规则'],tagType:'rule',question:'FIVB成年赛事每队最多可报多少名队员？',options:['12名','13名','14名','15名'],answer:2,explain:'[规则4.1.1]'},
+{id:18,tags:['规则'],tagType:'rule',question:'球员球衣号码范围是多少？',options:['1-12号','1-18号','1-20号','1-99号'],answer:2,explain:'[规则4.3.3]'},
+{id:19,tags:['规则'],tagType:'rule',question:'队长球衣上有什么特殊标记？',options:['队长袖标','胸前号码下有8×2cm下划线','不同颜色球衣','背后有C字母'],answer:1,explain:'[规则4.3.4]'},
+{id:20,tags:['规则'],tagType:'rule',question:'助理教练最多几名？',options:['1名','2名','3名','4名'],answer:1,explain:'[规则4.1.1]'},
+{id:21,tags:['规则'],tagType:'rule',question:'号码在胸前的最小高度？',options:['10cm','15cm','20cm','25cm'],answer:1,explain:'[规则4.3.3.2]'},
+{id:22,tags:['规则'],tagType:'rule',question:'号码在背后的最小高度？',options:['15cm','18cm','20cm','25cm'],answer:2,explain:'[规则4.3.3.2]'},
+{id:23,tags:['规则'],tagType:'rule',question:'号码线条最小宽度？',options:['1cm','2cm','3cm','4cm'],answer:1,explain:'[规则4.3.3.2]'},
+{id:24,tags:['规则'],tagType:'rule',question:'队长胸前下划线尺寸？',options:['6×2cm','8×2cm','10×2cm','8×3cm'],answer:1,explain:'[规则4.3.4]'},
+{id:25,tags:['规则'],tagType:'rule',question:'比赛用鞋有什么要求？',options:['必须有钉','轻便柔软橡胶或复合鞋底无后跟','必须是高帮鞋','必须是白色'],answer:1,explain:'[规则4.3.2]'},
+{id:26,tags:['规则'],tagType:'rule',question:'球队名单确定后能否更换？',options:['可以随时换','教练和队长签字后不能更换','每局可以换一次','只能换自由人'],answer:1,explain:'[规则4.1.3]'},
+{id:27,tags:['规则'],tagType:'rule',question:'替补队员可以哪里热身？',options:['只能在更衣室','比赛中在热身区暂停时在本方场地后自由区','可以在对方场地','可以在观众席'],answer:1,explain:'[规则4.2.3]'},
+{id:28,tags:['规则'],tagType:'rule',question:'场外队员坐哪里？',options:['自由活动','坐在本方替补席或热身区','坐在观众席','站在场边'],answer:1,explain:'[规则4.2.1]'},
+{id:29,tags:['规则'],tagType:'rule',question:'一局比赛非决胜局需多少分获胜？',options:['21分','25分','15分','30分'],answer:1,explain:'[规则6.2]'},
+{id:30,tags:['规则'],tagType:'rule',question:'决胜局第5局需要多少分获胜？',options:['25分','21分','15分','12分'],answer:2,explain:'[规则6.3.2]'},
+{id:31,tags:['规则'],tagType:'rule',question:'决胜局必须领先多少分？',options:['1分','2分','3分','4分'],answer:1,explain:'[规则6.3.2]'},
+{id:32,tags:['规则'],tagType:'rule',question:'非决胜局24-24后需领先多少分？',options:['1分','2分','3分','4分'],answer:1,explain:'[规则6.2]'},
+{id:33,tags:['规则'],tagType:'rule',question:'比赛采用几局几胜制？',options:['3局2胜','5局3胜','7局4胜','4局3胜'],answer:1,explain:'[规则6.3.1]'},
+{id:34,tags:['规则'],tagType:'rule',question:'接发球方赢得一球后获得什么？',options:['仅发球权','1分和发球权顺时针轮转','仅1分','2分'],answer:1,explain:'[规则6.1.3]'},
+{id:35,tags:['规则'],tagType:'rule',question:'球队弃权时比分如何判定？',options:['0-2和0-25','0-3和0-25','0-3和0-15','1-3和25-0'],answer:1,explain:'[规则6.4.1]'},
+{id:36,tags:['规则'],tagType:'rule',question:'两队同时犯规如何判罚？',options:['重赛','重新发球','各扣一分','按第一次犯规判'],answer:0,explain:'[规则6.1.2.2]'},
+{id:37,tags:['规则'],tagType:'rule',question:'连续犯规只判第几次？',options:['最后一次','第一次','全部','裁判选择'],answer:1,explain:'[规则6.1.2.1]'},
+{id:38,tags:['规则'],tagType:'rule',question:'比赛最多打几局？',options:['3局','4局','5局','7局'],answer:2,explain:'[规则6.3]'},
+{id:39,tags:['规则'],tagType:'rule',question:'哪一局需要重新挑边？',options:['每局都需要','只有第1局','第5局决胜局','第1局和第5局'],answer:2,explain:'[规则7.1]'},
+{id:40,tags:['规则'],tagType:'rule',question:'挑边获胜方可以选择什么？',options:['只能选发球或接发球','选发球接发球或场地','只能选场地','选择球权'],answer:1,explain:'[规则7.1.2]'},
+{id:41,tags:['规则'],tagType:'rule',question:'决胜局前是否需要重新挑边？',options:['不需要','需要','由裁判决定','队长协商'],answer:1,explain:'[规则7.1]'},
+{id:42,tags:['规则'],tagType:'rule',question:'比赛用几个球？',options:['1个','3个','5个','7个'],answer:2,explain:'[规则3.3]'},
+{id:43,tags:['规则'],tagType:'rule',question:'场上每队必须保持几名队员？',options:['5名','6名','7名','4名'],answer:1,explain:'[规则7.3.1]'},
+{id:44,tags:['规则'],tagType:'rule',question:'前排从左到右位置编号顺序？',options:['1-2-3','2-3-4','3-4-5','4-3-2'],answer:3,explain:'[规则7.4.1.1]'},
+{id:45,tags:['规则'],tagType:'rule',question:'后排从左到右位置编号顺序？',options:['4-5-6','5-6-1','6-1-2','1-2-3'],answer:1,explain:'[规则7.4.1.2]'},
+{id:46,tags:['规则'],tagType:'rule',question:'赢得发球权后轮转方向？',options:['逆时针','顺时针','教练决定','不轮转'],answer:1,explain:'[规则7.6.2]'},
+{id:47,tags:['规则'],tagType:'rule',question:'位置错误的后果？',options:['仅警告一次','对方得1分和发球权位置必须纠正','罚1分','取消该局资格'],answer:1,explain:'[规则7.5.4]'},
+{id:48,tags:['规则'],tagType:'rule',question:'轮转错误的后果？',options:['警告一次','对方得1分和发球权轮转顺序纠正','直接扣分','罚一局'],answer:1,explain:'[规则7.7.1]'},
+{id:49,tags:['规则'],tagType:'rule',question:'位置判断以什么为准？',options:['身体位置','脚部接触地面的位置','头部位置','手部位置'],answer:1,explain:'[规则7.4.3]'},
+{id:50,tags:['规则'],tagType:'rule',question:'发球击球后球员能否移动？',options:['不能移动','可以移动到任何位置','只能在前排移动','只能在原位'],answer:1,explain:'[规则7.4.4]'},
+{id:51,tags:['规则'],tagType:'rule',question:'发球队击球时球员站位规定？',options:['必须按轮转顺序站位','可以自由站位不受轮转限制','必须全部前排','必须全部后排'],answer:1,explain:'[规则7.4]'},
+{id:52,tags:['规则'],tagType:'rule',question:'位置错误何时判定？',options:['任何时候','发球击球瞬间','球落地后','每分结束后'],answer:1,explain:'[规则7.5.1]'},
+{id:53,tags:['规则'],tagType:'rule',question:'每局开始前教练需提交什么？',options:['队员名单','上场阵容位置表','战术安排','训练计划'],answer:1,explain:'[规则7.3.2]'},
+{id:54,tags:['规则'],tagType:'rule',question:'上场阵容表提交后能否更改？',options:['可随时更改','必须通过换人程序','不能更改','每局可改一次'],answer:1,explain:'[规则7.3.4]'},
+{id:55,tags:['规则'],tagType:'rule',question:'场上有个未注册的队员怎么处理？',options:['继续比赛','对方加分纠正阵容','警告后继续','取消该队员资格'],answer:1,explain:'[规则7.3.5.4]'},
+{id:56,tags:['规则'],tagType:'rule',question:'球落在边线上应判什么？',options:['界外球','界内球','重赛','裁判决定'],answer:1,explain:'[规则8.3]'},
+{id:57,tags:['规则'],tagType:'rule',question:'球触到标志杆应判什么？',options:['界内球','界外球','重新发球','比赛继续'],answer:1,explain:'[规则8.4.3]'},
+{id:58,tags:['规则'],tagType:'rule',question:'每队最多击球几次将球击回？',options:['2次','3次','4次','5次'],answer:1,explain:'[规则9.1]'},
+{id:59,tags:['规则'],tagType:'rule',question:'球员能否连续两次触球？',options:['可以','不可以除拦网和第一击外','任何时候都可以','只有自由人可以'],answer:1,explain:'[规则9.1.1]'},
+{id:60,tags:['规则'],tagType:'rule',question:'持球犯规是指什么？',options:['球碰到身体','球被接住和或抛出','球出界','球触网'],answer:1,explain:'[规则9.3.3]'},
+{id:61,tags:['规则'],tagType:'rule',question:'四次击球犯规是指什么？',options:['队员连击四次','一队击球四次才将球击回','发球四次失误','扣球四次出界'],answer:1,explain:'[规则9.3.1]'},
+{id:62,tags:['规则'],tagType:'rule',question:'球可以接触身体任何部位吗？',options:['只能用手臂','可以接触身体任何部位','只能用手部','只能用上半身'],answer:1,explain:'[规则9.2.1]'},
+{id:63,tags:['规则'],tagType:'rule',question:'两名队友同时触球算几次击球？',options:['算1次','算2或3次拦网除外','算1或2次','算0次'],answer:1,explain:'[规则9.1.2.1]'},
+{id:64,tags:['规则'],tagType:'rule',question:'第一次击球能否有连续接触？',options:['不能','可以同一动作中身体各部位连续接触允许','只能用手臂','只能用一个部位'],answer:1,explain:'[规则9.2.3.2]'},
+{id:65,tags:['规则'],tagType:'rule',question:'借助队友或物体击球属什么犯规？',options:['持球犯规','借助击球犯规','四次击球犯规','连击犯规'],answer:1,explain:'[规则9.3.2]'},
+{id:66,tags:['规则'],tagType:'rule',question:'从本方无障碍区外救球是否允许？',options:['不允许','允许可以越过记录台区域','只允许自由人','只允许队长'],answer:1,explain:'[规则9]'},
+{id:67,tags:['规则'],tagType:'rule',question:'两名对手网上同时触球后接球方有几次击球？',options:['1次','2次','3次','4次'],answer:2,explain:'[规则9.1.2.2]'},
+{id:68,tags:['规则'],tagType:'rule',question:'对手同时触球后球出界判哪方犯规？',options:['先触球方','球飞向方','对方','双方犯规'],answer:1,explain:'[规则9.1.2.2]'},
+{id:69,tags:['规则'],tagType:'rule',question:'拦网时连续触球是否犯规？',options:['犯规','不犯规同一动作内连续触球允许','只许一次触球','最多两次'],answer:1,explain:'[规则9.2.3.1]'},
+{id:70,tags:['规则'],tagType:'rule',question:'连击犯规是指什么？',options:['球出界','队员连续两次击球或身体各部位连续触球','触网','过中线'],answer:1,explain:'[规则9.3.4]'},
+{id:71,tags:['规则'],tagType:'rule',question:'球触网后落入对方场区是否有效？',options:['无效','有效比赛继续','重新比赛','判触网方犯规'],answer:1,explain:'[规则10.2]'},
+{id:72,tags:['规则'],tagType:'rule',question:'球从标志杆外飞到对方无障碍区能否救回？',options:['不能','第一次击球可以救回并从同侧返回','任何时候都能救回','只能自由人救'],answer:1,explain:'[规则10.1.2]'},
+{id:73,tags:['规则'],tagType:'rule',question:'两标志杆间触网是否都算犯规？',options:['所有触网都算犯规','影响击球动作的触网才算犯规','触网不算犯规','扣球时触网才算'],answer:1,explain:'[规则11.3.1]'},
+{id:74,tags:['规则'],tagType:'rule',question:'脚可以越过中线进入对方场地吗？',options:['完全不可以','部分接触或踩中线上方不干扰对方允许','完全踏入允许','可以随意越过'],answer:1,explain:'[规则11.2.2.1]'},
+{id:75,tags:['规则'],tagType:'rule',question:'过网击球犯规是指在对方空间内触球吗？',options:['是拦网时过网不犯规','不是','扣球时可以过网','任何时候都可以过网'],answer:0,explain:'[规则11.4.1]'},
+{id:76,tags:['规则'],tagType:'rule',question:'球击入球网导致网碰到对方球员是否犯规？',options:['判触网方犯规','不犯规','重新比赛','判对方犯规'],answer:1,explain:'[规则11.3.3]'},
+{id:77,tags:['规则'],tagType:'rule',question:'身体上部完全越过中线是否允许？',options:['允许只要不干扰对方','不允许','只允许手越过','任何时候都允许'],answer:0,explain:'[规则11.2.2.2]'},
+{id:78,tags:['规则'],tagType:'rule',question:'标志杆外触网是否算犯规？',options:['算犯规','不算犯规除借助外','算犯规只警告','裁判决定'],answer:1,explain:'[规则11.3.2]'},
+{id:79,tags:['规则'],tagType:'rule',question:'球从网下完全越过垂直面是否出界？',options:['是比赛停止','不是比赛继续','重新比赛','裁判决定'],answer:0,explain:'[规则10.1.3]'},
+{id:80,tags:['规则'],tagType:'rule',question:'拦网时手可以伸过球网吗？',options:['可以不干扰对方进攻即可','不可以','只能伸一半','只能自由人伸过'],answer:0,explain:'[规则11.1.1]'},
+{id:81,tags:['规则'],tagType:'rule',question:'发球时裁判鸣哨后几秒内发出？',options:['5秒','8秒','10秒','12秒'],answer:1,explain:'[规则12.4.4]'},
+{id:82,tags:['规则'],tagType:'rule',question:'发球时可以抛几次球？',options:['最多3次','只能抛1次','最多2次','不限次数'],answer:1,explain:'[规则12.4.2]'},
+{id:83,tags:['规则'],tagType:'rule',question:'发球擦网后落入对方场区是否有效？',options:['无效重新发','有效比赛继续','判发球失误','裁判决定'],answer:1,explain:'[规则10.2]'},
+{id:84,tags:['规则'],tagType:'rule',question:'发球击球时能否踩端线？',options:['可以踩','不可以踩','跳发不能踩','原地发可以踩'],answer:1,explain:'[规则12.4.3]'},
+{id:85,tags:['规则'],tagType:'rule',question:'发球后球员能否落在场内？',options:['可以落在场内','不可以必须落场外','只能落端线后','不能落地'],answer:0,explain:'[规则12.4.3]'},
+{id:86,tags:['规则'],tagType:'rule',question:'发球区宽度是多少？',options:['6m','9m','12m','全场宽度'],answer:1,explain:'[规则1.4.2]'},
+{id:87,tags:['规则'],tagType:'rule',question:'第一局由谁先发球？',options:['客队','挑边获胜方决定','主队','排名靠前队伍'],answer:1,explain:'[规则12.1.1]'},
+{id:88,tags:['规则'],tagType:'rule',question:'第二局由谁先发球？',options:['第一局输方','第一局未先发球的队伍','重新挑边','主队'],answer:1,explain:'[规则12.1.2]'},
+{id:89,tags:['规则'],tagType:'rule',question:'连续得分时由谁继续发球？',options:['换一名队员','同一名队员继续发球','轮换后发球','队长指定'],answer:1,explain:'[规则12.2.2.1]'},
+{id:90,tags:['规则'],tagType:'rule',question:'发球掩护犯规是什么？',options:['发球队员跳起','发球队集体站立挥手跳跃阻挡对方观察发球','发球擦网','发球出界'],answer:1,explain:'[规则12.5]'},
+{id:91,tags:['规则'],tagType:'rule',question:'鸣哨前发球如何处理？',options:['有效','取消重发','判对方得分','警告'],answer:1,explain:'[规则12.4.5]'},
+{id:92,tags:['规则'],tagType:'rule',question:'发球次序错误如何判罚？',options:['警告并纠正','对方得1分和发球权并纠正','取消之前得分','重新发球'],answer:1,explain:'[规则12.6.1.1]'},
+{id:93,tags:['规则'],tagType:'rule',question:'发球碰本队队员后如何处理？',options:['比赛继续','判对方得分','重新发球','对手选择'],answer:1,explain:'[规则12.6.2.1]'},
+{id:94,tags:['规则'],tagType:'rule',question:'发球时须用一只手或手臂击球吗？',options:['是必须用一只手或手臂击球','可以用脚','可以用头','可用身体任何部位'],answer:0,explain:'[规则12.4.1]'},
+{id:95,tags:['规则'],tagType:'rule',question:'发球队队员能否举手遮挡对方视线？',options:['球过网前可以','球过网前禁止举手过头部','随时都可以','完全禁止举手'],answer:1,explain:'[规则12.5.3]'},
+{id:96,tags:['规则'],tagType:'rule',question:'前排队员可在任何高度完成进攻击球吗？',options:['可以任何高度','不可以只能在球低于网口时','只能在3米线后','只允许扣球'],answer:0,explain:'[规则13.2.1]'},
+{id:97,tags:['规则'],tagType:'rule',question:'后排队员进攻起跳脚不能触及哪条线？',options:['端线','中线','3米进攻线','边线'],answer:2,explain:'[规则13.2.2.1]'},
+{id:98,tags:['规则'],tagType:'rule',question:'后排队员在前场区进攻的条件？',options:['球完全高于球网才能击球','触球时球必须有一部分低于球网上沿','任何时候都可以','只能用手传球'],answer:1,explain:'[规则13.2.3]'},
+{id:99,tags:['规则'],tagType:'rule',question:'对方发球时能直接扣球吗？',options:['可以','在前场区且完全高于球网时不能进攻','只能垫过去','只能用头顶'],answer:1,explain:'[规则13.2.4]'},
+{id:100,tags:['规则'],tagType:'rule',question:'进攻性击球包括除发球和拦网外的所有动作吗？',options:['是','不包括吊球','只包括扣球','不包括传球'],answer:0,explain:'[规则13.1.1]'},
+{id:101,tags:['规则'],tagType:'rule',question:'后排队员进攻后可落在前场区吗？',options:['不可以','可以落在前场区','只能落在3米线后','不能落地'],answer:1,explain:'[规则13.2.2.2]'},
+{id:102,tags:['规则'],tagType:'rule',question:'吊球时对手法有什么要求？',options:['可以抓球抛过去','必须清晰击球不能接住或抛出','用手指弹球','用拳头顶球'],answer:1,explain:'[规则13.1.2]'},
+{id:103,tags:['规则'],tagType:'rule',question:'进攻性击球何时算完成？',options:['球离手时','球完全越过球网垂直面或被对方触球时','落地时','触网时'],answer:1,explain:'[规则13.1.3]'},
+{id:104,tags:['规则'],tagType:'rule',question:'后排队员前场区扣球时球高于球网算什么犯规？',options:['后排进攻犯规','持球犯规','连击犯规','触网犯规'],answer:0,explain:'[规则13.3.3]'},
+{id:105,tags:['规则'],tagType:'rule',question:'自由人击球时球高于球网上沿算什么犯规？',options:['合法击球','自由人进攻性击球犯规','拦网犯规','持球犯规'],answer:1,explain:'[规则13.3.5]'},
+{id:106,tags:['规则'],tagType:'rule',question:'对方发球前场区球高于球网进攻算什么犯规？',options:['进攻犯规','合法操作','拦网犯规','持球犯规'],answer:0,explain:'[规则13.3.4]'},
+{id:107,tags:['规则'],tagType:'rule',question:'进攻时打到对方空间算什么犯规？',options:['过网击球犯规','合法击球','触网犯规','连击犯规'],answer:0,explain:'[规则13.3.1]'},
+{id:108,tags:['规则'],tagType:'rule',question:'后排队员从3米线后在任意高度进攻是否允许？',options:['不允许','允许','只能扣不能吊','只能吊不能扣'],answer:1,explain:'[规则13.2.2]'},
+{id:109,tags:['规则'],tagType:'rule',question:'哪些球员可以完成拦网？',options:['所有6名队员','只有前排队员','只有后排队员','只有自由人'],answer:1,explain:'[规则14.1.1]'},
+{id:110,tags:['规则'],tagType:'rule',question:'拦网触球是否计入三次击球？',options:['计入1次','不计入拦网后仍有3次击球','计入2次','裁判判定'],answer:1,explain:'[规则14.4.1]'},
+{id:111,tags:['规则'],tagType:'rule',question:'拦对方发球是否允许？',options:['允许','不允许','只允许单人拦网','允许不计入击球次数'],answer:1,explain:'[规则14.5]'},
+{id:112,tags:['规则'],tagType:'rule',question:'拦网时身体必须高于球网吗？',options:['不需要','触球时须有一部分身体高于球网上沿','整个身体都要高于球网','手臂高于球网即可'],answer:1,explain:'[规则14.1.1]'},
+{id:113,tags:['规则'],tagType:'rule',question:'拦网后谁可以打第一球？',options:['必须是后排队员','任何队员含拦网队员都可以','必须是前排队员','不能是拦网队员'],answer:1,explain:'[规则14.4.2]'},
+{id:114,tags:['规则'],tagType:'rule',question:'三人拦网算集体拦网吗？',options:['算','不算每个单独算','只能两人拦网','三人拦网犯规'],answer:0,explain:'[规则14.1.4]'},
+{id:115,tags:['规则'],tagType:'rule',question:'后排队员完成拦网算什么犯规？',options:['后排进攻犯规','拦网犯规','位置错误','没有犯规'],answer:1,explain:'[规则14.6.2]'},
+{id:116,tags:['规则'],tagType:'rule',question:'拦网试图是指什么？',options:['完成拦网','拦网动作但没有触球','拦网触球后','跳起拦网'],answer:1,explain:'[规则14.1.2]'},
+{id:117,tags:['规则'],tagType:'rule',question:'拦网时手可否伸过球网？',options:['对方进攻后才能伸过网','不能伸过球网','可以伸过球网','只能自由人伸'],answer:0,explain:'[规则14.3]'},
+{id:118,tags:['规则'],tagType:'rule',question:'标志杆外拦网是否犯规？',options:['合法','犯规','只能前排拦','只能自由人拦'],answer:1,explain:'[规则14.6.5]'},
+{id:119,tags:['规则'],tagType:'rule',question:'每局每队最多可请求几次暂停？',options:['1次','2次','3次','4次'],answer:1,explain:'[规则15.1]'},
+{id:120,tags:['规则'],tagType:'rule',question:'每次暂停时长？',options:['15秒','30秒','45秒','60秒'],answer:1,explain:'[规则15.4.1]'},
+{id:121,tags:['规则'],tagType:'rule',question:'每局每队最多可换人几次？',options:['4次','6次','8次','不限次数'],answer:1,explain:'[规则15.1]'},
+{id:122,tags:['规则'],tagType:'rule',question:'首发队员一局可上场几次？',options:['只能上场一次','可离场一次并再次上场一次只能回原位','可任意上下场','只能下场不能上场'],answer:1,explain:'[规则15.6.1]'},
+{id:123,tags:['规则'],tagType:'rule',question:'换人必须在什么区域完成？',options:['端线后','换人区进攻线延长线至记录台','无障碍区内','球网前'],answer:1,explain:'[规则15.10.1]'},
+{id:124,tags:['规则'],tagType:'rule',question:'替补队员一局可上场几次？',options:['上场一次且只能被同一名首发换下','可上下场多次','没有限制','只能上场一次'],answer:0,explain:'[规则15.6.2]'},
+{id:125,tags:['规则'],tagType:'rule',question:'暂停时场上队员去哪里？',options:['留在场上原地','到本方场地附近的自由区','回到替补席','到记录台'],answer:1,explain:'[规则15.4.2]'},
+{id:126,tags:['规则'],tagType:'rule',question:'换人请求由谁提出？',options:['只能教练','教练或队长教练不在时','任何队员','助理教练'],answer:1,explain:'[规则15.3.1]'},
+{id:127,tags:['规则'],tagType:'rule',question:'同一局能否连续两次换人？',options:['能','不能中间须有至少一个完整的比赛回合','裁判决定','只能换一次'],answer:1,explain:'[规则15.2.3]'},
+{id:128,tags:['规则'],tagType:'rule',question:'能否同时换多名队员？',options:['不能','可以多名替补同时进换人区逐对进行','最多换两人','只能逐一进行'],answer:1,explain:'[规则15.10.4]'},
+{id:129,tags:['规则'],tagType:'rule',question:'因伤无法继续能否特殊换人？',options:['可超出正常换人次数进行特殊换人','不能只能放弃比赛','只能自由人替换','须同位置替换'],answer:0,explain:'[规则15.7]'},
+{id:130,tags:['规则'],tagType:'rule',question:'特殊换人上场的队员能否再上场？',options:['可以','不能再参加比赛','可在下一局上场','裁判决定'],answer:1,explain:'[规则15.7]'},
+{id:131,tags:['规则'],tagType:'rule',question:'非法换人的后果？',options:['警告一次','对方得1分和发球权换人必须纠正','罚出场','取消该局'],answer:1,explain:'[规则15.9.2]'},
+{id:132,tags:['规则'],tagType:'rule',question:'第一次不当请求暂停或换人如何处罚？',options:['延误警告','直接判罚','红牌','拒绝并记录不扣分'],answer:0,explain:'[规则15.11.2]'},
+{id:133,tags:['规则'],tagType:'rule',question:'再次不当请求如何处罚？',options:['再次拒绝','按延误处理','黄牌警告','红牌'],answer:1,explain:'[规则15.11.3]'},
+{id:134,tags:['规则'],tagType:'rule',question:'每局开始前能否换人？',options:['不能','可以算作该局正常换人','只能换自由人','只能首发调整'],answer:1,explain:'[规则15.3.2]'},
+{id:135,tags:['规则'],tagType:'rule',question:'被罚出场的队员如何替换？',options:['须立即通过合法换人替换','可以暂缓替换','由自由人代替','不需替换'],answer:0,explain:'[规则15.8]'},
+{id:136,tags:['规则'],tagType:'rule',question:'第一次延误比赛受什么处罚？',options:['直接判对方得分','延误警告不扣分','红牌','取消比赛资格'],answer:1,explain:'[规则16.2.2]'},
+{id:137,tags:['规则'],tagType:'rule',question:'第二次及以后延误受什么处罚？',options:['再次警告','延误判罚对方得1分和发球权','黄牌警告','罚出场'],answer:1,explain:'[规则16.2.3]'},
+{id:138,tags:['规则'],tagType:'rule',question:'比赛中断不超过多少小时可继续比赛？',options:['2小时','4小时','6小时','8小时'],answer:1,explain:'[规则17.3.2]'},
+{id:139,tags:['规则'],tagType:'rule',question:'超4小时中断全场比赛如何？',options:['从断点继续','全场比赛重赛','取消比赛','择日重赛'],answer:1,explain:'[规则17.3.3]'},
+{id:140,tags:['规则'],tagType:'rule',question:'受伤队员恢复时间最多多少？',options:['1分钟','3分钟','5分钟','没有限制'],answer:1,explain:'[规则17.1.2]'},
+{id:141,tags:['规则'],tagType:'rule',question:'自由人球衣颜色有何要求？',options:['必须相同','必须明显不同','可相同可不同','没有要求'],answer:1,explain:'[规则19.2]'},
+{id:142,tags:['规则'],tagType:'rule',question:'自由人能否完成进攻性击球？',options:['可以','不可以击球时球完全高于球网上沿则犯规','只能在后排扣球','可扣任何球'],answer:1,explain:'[规则19.3.1.2]'},
+{id:143,tags:['规则'],tagType:'rule',question:'自由人能否拦网或试图拦网？',options:['可以','不能拦网也不能试图拦网','可试图拦网但不可完成','只能单人拦'],answer:1,explain:'[规则19.3.1.3]'},
+{id:144,tags:['规则'],tagType:'rule',question:'自由人前场区上手传球后队友能否扣球？',options:['可以','不可以球高于球网时不能扣球','只要自由人不跳就可以','只有在后排可以'],answer:1,explain:'[规则19.3.1.4]'},
+{id:145,tags:['规则'],tagType:'rule',question:'自由人替换是否计入换人次数？',options:['计入','不计入可自由替换','只能替换一次','每局只能换两次'],answer:1,explain:'[规则19.3.2]'},
+{id:146,tags:['规则'],tagType:'rule',question:'红牌表示什么处罚？',options:['警告','该队员该局取消比赛资格','取消全场比赛资格','罚1分'],answer:1,explain:'[规则21.3]'},
+{id:147,tags:['规则'],tagType:'rule',question:'红黄牌同时出示表示什么？',options:['警告','取消全场比赛资格','罚出场外','直接判负'],answer:1,explain:'[规则21.3]'},
+{id:148,tags:['规则'],tagType:'rule',question:'黄牌表示什么？',options:['警告','该局取消比赛资格','取消全场资格','罚1分'],answer:0,explain:'[规则21.3]'},
+{id:149,tags:['规则'],tagType:'rule',question:'正式比赛前官方热身时间多少？',options:['3分钟','6或10分钟','15分钟','20分钟'],answer:1,explain:'[规则7.2.1]'},
+{id:150,tags:['规则'],tagType:'rule',question:'比赛场地最低温度要求？',options:['5°C','10°C','15°C','20°C'],answer:1,explain:'[规则1.5]'}
+];
+
+
+
+
+
+// ===== State =====
+const PER_ROUND = 20;
+let studentName = '';
+let startTime = null;
+let round = 1;
+let currentIdx = 0;
+let correctSet = new Set();
+let wrongSet = new Set();
+let selected = null;
+let answered = false;
+let shuffled = [];
+let currentShuffledOrder = [];
+
+function pad(n) { return n.toString().padStart(2, '0'); }
+
+function getNowStr() {
+  const d = new Date();
+  const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const timeStr = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  return { dateStr, timeStr, full: `${dateStr} ${timeStr}` };
+}
+
+// Login initialization
+function initLogin() {
+  const now = getNowStr();
+  document.getElementById('loginDate').textContent = now.dateStr;
+  document.getElementById('loginTime').textContent = now.timeStr;
+  document.getElementById('nameInput').addEventListener('input', function() {
+    document.getElementById('startBtn').disabled = this.value.trim().length < 1;
+  });
+  document.getElementById('nameInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && this.value.trim().length >= 1) startQuiz();
+  });
+}
+initLogin();
+
+function startQuiz() {
+  const name = document.getElementById('nameInput').value.trim();
+  if (!name) return;
+  studentName = name;
+  startTime = new Date();
+  document.getElementById('loginOverlay').classList.add('hidden');
+  document.getElementById('studentNameBadge').textContent = '👤 ' + studentName;
+    initRound1();
+  }
+
+function goHome() {
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('nameInput').value = '';
+  document.getElementById('startBtn').disabled = true;
+  studentName = '';
+  startTime = null;
+  const now = getNowStr();
+  document.getElementById('loginDate').textContent = now.dateStr;
+  document.getElementById('loginTime').textContent = now.timeStr;
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function initRound1() {
+  round = 1;
+  currentIdx = 0;
+  correctSet = new Set();
+  wrongSet = new Set();
+  document.getElementById('totalQCount').textContent = ALL_QUESTIONS.length;
+  shuffled = shuffle(ALL_QUESTIONS.map(q => q.id)).slice(0, PER_ROUND);
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('retryBtn').classList.add('hidden');
+  document.getElementById('wrongTopicList').classList.remove('show');
+  document.getElementById('questionCard').classList.remove('hidden');
+  document.getElementById('btnArea').classList.remove('hidden');
+  document.getElementById('roundLabel').textContent = '第 1 轮 · 随机抽20题';
+  document.getElementById('roundLabel').style.display = 'inline-block';
+  document.getElementById('roundTag').textContent = '📖 随机抽题';
+  document.getElementById('roundTag').className = '';
+  showQuestion();
+}
+
+function showQuestion() {
+  const total = shuffled.length;
+  const qid = shuffled[currentIdx];
+  const q = ALL_QUESTIONS.find(x => x.id === qid);
+
+  document.getElementById('qNumber').textContent = `第 ${currentIdx+1} 题（共 ${total} 题）· 题库共 ${ALL_QUESTIONS.length} 道`;
+
+  const tagMap = {rule:'tag-rule'};
+  const tagCls = tagMap[q.tagType] || 'tag-tech';
+  const tagNames = {rule:'规则'};
+  const tagName = tagNames[q.tagType] || '技术';
+  const isMulti = q.multi === true;
+  document.getElementById('qTags').innerHTML = `<span class="tag ${tagCls}">${tagName}</span>${isMulti ? '<span class="multi-hint">多选题</span>' : ''}`;
+  document.getElementById('qText').textContent = q.question;
+
+  // Pad ALL options to same length
+  const optTexts = q.options.map(o => o);
+  const maxLen = Math.max(...optTexts.map(o => o.length));
+  const targetLen = Math.ceil((maxLen + 1) / 5) * 5;
+  const paddedOpts = optTexts.map(o => {
+    const padCount = targetLen - o.length;
+    if (padCount <= 0) return o;
+    return o + '<span class="pad-fill">' + '一'.repeat(padCount) + '</span>';
+  });
+
+  // Shuffle option order
+  const optCount = q.options.length;
+  const indices = Array.from({length: optCount}, (_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  currentShuffledOrder = indices;
+
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML = '';
+  const letters = optCount === 2 ? ['✓', '✗'] : ['A', 'B', 'C', 'D'];
+  indices.forEach((origIdx, displayIdx) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    const lCls = isMulti ? 'letter square' : 'letter';
+    div.innerHTML = `<span class="${lCls}">${letters[displayIdx]}</span><span style="flex:1">${paddedOpts[origIdx]}</span>`;
+    div.dataset.origIdx = origIdx;
+    div.onclick = () => selectOption(origIdx, isMulti);
+    optDiv.appendChild(div);
+  });
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('nextBtn').textContent = '提交答案';
+  selected = isMulti ? [] : null;
+  answered = false;
+  updateProgress();
+  updateScore();
+}
+
+function selectOption(idx, isMulti) {
+  if (answered) return;
+  if (isMulti) {
+    const pos = selected.indexOf(idx);
+    if (pos >= 0) selected.splice(pos, 1);
+    else selected.push(idx);
+    document.querySelectorAll('.option').forEach((el) => {
+      const oi = parseInt(el.dataset.origIdx);
+      el.classList.toggle('selected', selected.indexOf(oi) >= 0);
+    });
+    document.getElementById('nextBtn').disabled = selected.length === 0;
+  } else {
+    selected = idx;
+    document.querySelectorAll('.option').forEach((el) => el.classList.toggle('selected', parseInt(el.dataset.origIdx) === idx));
+    document.getElementById('nextBtn').disabled = false;
+  }
+}
+
+function handleNext() {
+  if (!answered) submitAnswer();
+  else nextQuestion();
+}
+
+function submitAnswer() {
+  if ((Array.isArray(selected) && selected.length === 0) || (!Array.isArray(selected) && selected === null)) return;
+  answered = true;
+  const qid = shuffled[currentIdx];
+  const q = ALL_QUESTIONS.find(x => x.id === qid);
+  const isMulti = q.multi === true;
+  let correct = false;
+
+  const opts = document.querySelectorAll('.option');
+  if (isMulti) {
+    const ansArr = q.multiAnswer;
+    const sortedSelected = [...selected].sort();
+    const sortedAnswer = [...ansArr].sort();
+    correct = sortedSelected.length === sortedAnswer.length && sortedSelected.every((v,i) => v === sortedAnswer[i]);
+    opts.forEach((el) => {
+      el.classList.add('disabled');
+      const oi = parseInt(el.dataset.origIdx);
+      if (ansArr.indexOf(oi) >= 0) el.classList.add('show-correct');
+      if (selected.indexOf(oi) >= 0 && ansArr.indexOf(oi) < 0) el.classList.add('wrong');
+    });
+  } else {
+    correct = selected === q.answer;
+    opts.forEach((el) => {
+      el.classList.add('disabled');
+      if (parseInt(el.dataset.origIdx) === q.answer) el.classList.add('show-correct');
+      if (parseInt(el.dataset.origIdx) === selected && !correct) el.classList.add('wrong');
+    });
+  }
+
+  const fb = document.getElementById('feedback');
+  if (correct) {
+    fb.className = 'feedback correct show';
+    document.getElementById('fbText').textContent = '✅ 回答正确！';
+    correctSet.add(qid);
+  } else {
+    fb.className = 'feedback wrong show';
+    document.getElementById('fbText').textContent = '❌ 回答错误';
+    wrongSet.add(qid);
+  }
+  document.getElementById('fbExplain').textContent = q.explain;
+  document.getElementById('nextBtn').textContent = currentIdx < shuffled.length - 1 ? '下一题 →' : '查看成绩';
+  updateScore();
+}
+
+function nextQuestion() {
+  currentIdx++;
+  if (currentIdx >= shuffled.length) showResult();
+  else showQuestion();
+}
+
+function updateProgress() {
+  const total = shuffled.length;
+  const pct = (currentIdx / total * 100).toFixed(0);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `第 ${currentIdx+1} / ${total} 题`;
+}
+
+function updateScore() {
+  const total = shuffled.length;
+  const done = currentIdx + (answered ? 1 : 0);
+  const pct = (done / total * 100).toFixed(0);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `第 ${Math.min(done, total)} / ${total} 题`;
+  document.getElementById('correctCount').textContent = correctSet.size;
+  document.getElementById('wrongCount').textContent = wrongSet.size;
+}
+
+function showResult() {
+  document.getElementById('questionCard').classList.add('hidden');
+  document.getElementById('btnArea').classList.add('hidden');
+  document.getElementById('resultCard').classList.add('show');
+
+  const total = shuffled.length;
+  const correct = correctSet.size;
+
+  // Show name and date/time
+  const endTime = new Date();
+  const endStr = getNowStr();
+  const duration = Math.round((endTime - startTime) / 1000);
+  const durMin = Math.floor(duration / 60);
+  const durSec = duration % 60;
+  document.getElementById('resultName').textContent = '👤 ' + studentName;
+  document.getElementById('resultDateTime').textContent = `📅 ${endStr.full}  ⏱ ${durMin}分${durSec}秒`;
+
+  document.getElementById('finalScore').textContent = correct;
+  document.getElementById('resultDetail').innerHTML = `答对 <span>${correct}</span> 题，答错 <span>${total - correct}</span> 题，正确率 <span>${(correct/total*100).toFixed(0)}%</span>`;
+
+  if (wrongSet.size > 0) {
+    document.getElementById('resultBreakdown').innerHTML = `薄弱环节涉及 ${wrongSet.size} 道技术题需要加强`;
+    document.getElementById('retryBtn').classList.remove('hidden');
+  } else {
+    document.getElementById('resultBreakdown').textContent = '全部答对，太棒了！🎉';
+  }
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressText').textContent = `${total} / ${total} 题 · 完成`;
+}
+
+function startRound2() {
+  if (wrongSet.size === 0) return;
+  round = 2;
+  currentIdx = 0;
+  shuffled = shuffle([...wrongSet]);
+  wrongSet = new Set();
+
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('retryBtn').classList.add('hidden');
+  document.getElementById('questionCard').classList.remove('hidden');
+  document.getElementById('btnArea').classList.remove('hidden');
+
+  document.getElementById('roundLabel').textContent = '第 2 轮 · 错题再测';
+  document.getElementById('roundLabel').style.display = 'inline-block';
+  document.getElementById('roundTag').textContent = '🎯 薄弱环节再测（仅错题）';
+  document.getElementById('roundTag').className = 'r2';
+
+  const wrongDiv = document.getElementById('wrongTopicList');
+  wrongDiv.innerHTML = `<strong>本轮针对 ${shuffled.length} 道错题进行再测：</strong>`;
+  wrongDiv.classList.add('show');
+  showQuestion();
+}
+
+function restart() {
+  goHome();
+}
+
+initRound1();
+</script>
+</body>
+</html>

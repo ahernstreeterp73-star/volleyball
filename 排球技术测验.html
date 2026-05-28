@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏐 排球技术测验</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Microsoft YaHei', '微软雅黑', sans-serif;
+    background: #f0f4f8;
+    color: #1a2332;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .container { max-width: 720px; margin: 0 auto; padding-bottom: 80px; }
+
+  .header {
+    text-align: center;
+    padding: 28px 20px 20px;
+    background: linear-gradient(135deg, #1F4E79, #2E75B6);
+    border-radius: 16px;
+    color: #fff;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(31,78,121,0.25);
+  }
+  .header h1 { font-size: 24px; font-weight: 700; letter-spacing: 1px; }
+  .header p { font-size: 14px; opacity: 0.85; margin-top: 6px; }
+  .header .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  .header .badge-num {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-top: 8px;
+  }
+
+  .progress-wrap {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .progress-bar {
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .progress-bar .fill {
+    height: 100%;
+    background: linear-gradient(90deg, #2E75B6, #4A9BDB);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #64748b;
+  }
+  .progress-info .score { color: #1F4E79; font-weight: 700; }
+
+  .round-badge { text-align: center; margin-bottom: 12px; }
+  .round-badge span {
+    display: inline-block;
+    background: #fff;
+    border: 2px solid #2E75B6;
+    color: #2E75B6;
+    padding: 4px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .round-badge .r2 { border-color: #CC0000; color: #CC0000; }
+
+  .question-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 24px 24px 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .q-number {
+    font-size: 13px;
+    color: #2E75B6;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .q-tags { margin-bottom: 10px; }
+  .q-tags .tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    margin-right: 4px;
+  }
+  .tag-tech { background: #E8F4FD; color: #2E75B6; }
+  .tag-rule { background: #FCE4EC; color: #880E4F; }
+  .tag-bump { background: #E8F4FD; color: #2E75B6; }
+  .tag-set { background: #FFF3E0; color: #E65100; }
+  .tag-spike { background: #FFEBEE; color: #C62828; }
+  .tag-serve { background: #E8F5E9; color: #2E7D32; }
+  .tag-block { background: #F3E5F5; color: #6A1B9A; }
+  .tag-defense { background: #E0F7FA; color: #00695C; }
+  .tag-footwork { background: #FCE4EC; color: #880E4F; }
+
+  .q-text {
+    font-size: 17px;
+    font-weight: 600;
+    line-height: 1.6;
+    margin-bottom: 18px;
+    color: #1a2332;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .option:hover:not(.disabled) { border-color: #2E75B6; background: #F5F9FF; }
+  .option .letter {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: #64748b;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .option .letter.square { border-radius: 4px; }
+  .option.selected { border-color: #2E75B6; background: #EBF4FF; }
+  .option.selected .letter { background: #2E75B6; color: #fff; }
+  .option.correct { border-color: #16a34a; background: #F0FFF4; }
+  .option.correct .letter { background: #16a34a; color: #fff; }
+  .option.wrong { border-color: #dc2626; background: #FFF5F5; }
+  .option.wrong .letter { background: #dc2626; color: #fff; }
+  .option.disabled { cursor: default; opacity: 0.95; }
+  .option.show-correct { border-color: #16a34a; background: #F0FFF4; }
+  .option.show-correct .letter { background: #16a34a; color: #fff; }
+  .multi-hint { font-size: 12px; color: #E65100; background: #FFF3E0; display: inline-block; padding: 2px 10px; border-radius: 8px; margin-left: 8px; }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.6;
+    display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct { background: #F0FFF4; border: 1px solid #bbf7d0; color: #166534; }
+  .feedback.wrong { background: #FFF5F5; border: 1px solid #fecaca; color: #991b1b; }
+  .feedback .explain { margin-top: 6px; font-size: 13px; color: #4b5563; }
+
+  .pad-fill { color: transparent; user-select: none; pointer-events: none; }
+
+  .btn-area {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: 12px 20px 16px;
+    background: linear-gradient(to top, rgba(255,255,255,0.95) 60%, rgba(255,255,255,0));
+    z-index: 50;
+    pointer-events: none;
+  }
+  .btn-area .btn {
+    pointer-events: auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  .btn {
+    display: inline-block;
+    padding: 12px 40px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .btn-primary { background: #2E75B6; color: #fff; }
+  .btn-primary:hover { background: #1F4E79; transform: translateY(-1px); }
+  .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+  .btn-success { background: #16a34a; color: #fff; }
+  .btn-success:hover { background: #15803d; }
+  .btn-outline { background: #fff; color: #2E75B6; border: 2px solid #2E75B6; }
+  .btn-outline:hover { background: #F5F9FF; }
+
+  .result-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 36px 24px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    display: none;
+  }
+  .result-card.show { display: block; }
+  .result-card .big-score { font-size: 56px; font-weight: 800; color: #1F4E79; }
+  .result-card .label { font-size: 16px; color: #64748b; margin: 4px 0 16px; }
+  .result-card .detail { font-size: 14px; color: #4b5563; line-height: 1.8; }
+  .result-card .detail span { font-weight: 700; }
+  .result-card .breakdown { margin-top: 16px; font-size: 13px; color: #64748b; }
+  .result-card .btn { margin-top: 20px; }
+
+  .wrong-topic-list {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: #FFF8F0;
+    border-radius: 10px;
+    border: 1px solid #fed7aa;
+    display: none;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .wrong-topic-list.show { display: block; }
+  .wrong-topic-list strong { color: #c2410c; }
+
+  .hidden { display: none; }
+
+  /* Login overlay */
+  .login-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15,23,42,0.7);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 999;
+    backdrop-filter: blur(4px);
+  }
+  .login-overlay.hidden { display: none; }
+  .login-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 36px 32px;
+    width: 380px;
+    max-width: 90vw;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: slideUp 0.35s ease;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .login-icon { font-size: 48px; margin-bottom: 8px; }
+  .login-card h2 { font-size: 22px; color: #1F4E79; margin-bottom: 2px; }
+  .login-sub { font-size: 13px; color: #64748b; margin-bottom: 24px; }
+  .login-form { display: flex; flex-direction: column; gap: 12px; }
+  .login-form label { font-size: 14px; font-weight: 600; color: #1a2332; text-align: left; }
+  .login-form input {
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: center;
+  }
+  .login-form input:focus { border-color: #2E75B6; }
+  .login-form input::placeholder { color: #94a3b8; }
+  .login-info {
+    display: flex; justify-content: center; gap: 20px;
+    font-size: 13px; color: #64748b; padding: 4px 0;
+  }
+  .login-form .btn { margin-top: 8px; width: 100%; padding: 14px; font-size: 16px; }
+  .login-form .btn:disabled { background: #94a3b8; cursor: not-allowed; transform: none; }
+
+  /* Result header */
+  .result-header {
+    display: flex; align-items: center; gap: 14px;
+    background: #F0F7FF;
+    border: 1px solid #D6E4F0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    text-align: left;
+  }
+  .result-stamp { font-size: 36px; }
+  .result-meta { display: flex; flex-direction: column; gap: 2px; }
+  .result-meta span:first-child {
+    font-size: 16px; font-weight: 700; color: #1F4E79;
+  }
+  .result-meta span:last-child {
+    font-size: 12px; color: #64748b;
+  }
+  .result-footer-note {
+    margin-top: 14px;
+    font-size: 11px;
+    color: #94a3b8;
+    border-top: 1px dashed #e2e8f0;
+    padding-top: 14px;
+  }
+
+  @media (max-width: 480px) {
+    .container { padding: 0 12px 80px; }
+    .question-card { padding: 20px 16px; }
+    .q-text { font-size: 16px; }
+    .option { font-size: 14px; padding: 11px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="container" id="app">
+
+  <!-- Login overlay -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+      <div class="login-icon">🏐</div>
+      <h2>排球技术测验</h2>
+      <p class="login-sub">排球 · 技术理论测试</p>
+      <div class="login-form">
+        <label>请输入你的姓名</label>
+        <input type="text" id="nameInput" placeholder="输入姓名后点击开始" maxlength="20" autocomplete="off">
+        <div class="login-info">
+          <span>📅 <span id="loginDate"></span></span>
+          <span>⏰ <span id="loginTime"></span></span>
+        </div>
+        <button class="btn btn-primary" id="startBtn" onclick="startQuiz()" disabled>开始测验</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="header">
+    <h1>🏐 排球技术测验</h1>
+    <p>排球 · 技术理论测试</p>
+    <div class="badge" id="studentNameBadge"></div>
+    <div class="badge" id="roundLabel" style="display:none;"></div>
+    <div class="badge-num">题库共 <span id="totalQCount">305</span> 道技术题 · 每次随机10道</div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-info">
+      <span id="progressText">第 1 / 10 题</span>
+      <span class="score">✅ <span id="correctCount">0</span>  ❌ <span id="wrongCount">0</span></span>
+    </div>
+  </div>
+
+  <div class="round-badge" id="roundIndicator">
+    <span id="roundTag">📖 随机抽题</span>
+  </div>
+
+  <div class="question-card" id="questionCard">
+    <div class="q-number" id="qNumber">第 1 题</div>
+    <div class="q-tags" id="qTags"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback">
+      <div class="fb-text" id="fbText"></div>
+      <div class="explain" id="fbExplain"></div>
+    </div>
+  </div>
+
+  <div class="btn-area" id="btnArea">
+    <button class="btn btn-primary" id="nextBtn" disabled onclick="handleNext()">提交答案</button>
+  </div>
+
+  <div class="wrong-topic-list" id="wrongTopicList"></div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-header">
+      <div class="result-stamp" id="resultStamp">🏆</div>
+      <div class="result-meta">
+        <span id="resultName"></span>
+        <span id="resultDateTime"></span>
+      </div>
+    </div>
+    <div class="big-score" id="finalScore">0</div>
+    <div class="label">答对 / 10 题</div>
+    <div class="detail" id="resultDetail"></div>
+    <div class="breakdown" id="resultBreakdown"></div>
+    <div class="result-footer-note">⏱ 本次测试完成时间已记录，不可重复使用同一截图</div>
+    <button class="btn btn-outline" onclick="goHome()">🏠 返回首页</button>
+    <button class="btn btn-success hidden" id="retryBtn" onclick="startRound2()">📝 针对薄弱环节再测</button>
+  </div>
+</div>
+
+<script>
+const ALL_QUESTIONS = [
+{id:1,tags:['垫球'],tagType:'bump',question:'垫球时，两臂的正确姿势是？',options:['两臂弯曲用手背去接球','两臂伸直夹紧前臂内侧形成平面','两臂交叉用上臂外侧接球','两臂分开用手心向上接球'],answer:1,explain:'垫球标准动作为两臂伸直夹紧、前臂内侧形成平面，利用全身协调发力。'},
+{id:2,tags:['垫球'],tagType:'bump',question:'垫球时击球点在身体的什么位置？',options:['头顶上方约50cm位置','胸前正前方约一臂距离处','腰部右侧身体旁边','膝盖前方地面附近'],answer:1,explain:'垫球的击球点在胸前正前方约一臂距离处，便于观察球路和全身发力。'},
+{id:3,tags:['垫球'],tagType:'bump',question:'垫球时下肢应保持什么姿势？',options:['膝盖挺直身体站直','膝盖微屈重心在前脚掌','一脚弯曲一脚伸直','双脚紧紧并拢站直'],answer:1,explain:'垫球时应膝盖微屈、重心在前脚掌，便于快速移动和稳定发力。'},
+{id:4,tags:['垫球'],tagType:'bump',question:'判断垫球质量最重要的指标是？',options:['手臂大幅挥动幅度','垫球的高度和落点稳定性','击球声音大小和音色','是否跳起进行垫球'],answer:1,explain:'垫球质量主要看垫球的高度和落点稳定性，一传要到位才具备组织进攻的条件。'},
+{id:5,tags:['垫球'],tagType:'bump',question:'接大力扣球时，垫球动作应如何调整？',options:['加大手臂摆动幅度用力','手臂稳定利用来球力量缓冲反弹','身体后仰躲开不看球','用拳头直接把球挡回去'],answer:1,explain:'接大力扣球时手臂应保持稳定，利用来球力量反弹，适当后引缓冲，不可主动发力过猛。'},
+{id:6,tags:['垫球'],tagType:'bump',question:'垫球时手肘的正确状态是？',options:['肘关节弯曲呈90度','肘关节必须完全伸直锁死','肘关节自然伸直不锁死','肘关节向外展开'],answer:2,explain:'垫球时肘关节自然伸直但不锁死，保持手臂形成一个稳定的平面。'},
+{id:7,tags:['垫球'],tagType:'bump',question:'低姿垫球时，手臂与地面的角度大约是？',options:['与地面基本平行0度','与地面约呈30到45度','与地面约呈60到70度','与地面垂直呈90度'],answer:1,explain:'低姿垫球时手臂与地面约呈30°-45°角，便于将球垫起而非推平。'},
+{id:8,tags:['垫球'],tagType:'bump',question:'接发球（一传）时，身体应正对哪个方向？',options:['正对来球方向站位','正对球网方向站位','正对二传位置站位','侧对来球方向站位'],answer:0,explain:'接发球时应正对来球方向，使身体正面对球，便于控制垫球方向和力度。'},
+{id:9,tags:['垫球'],tagType:'bump',question:'垫球时，拇指的正确位置是？',options:['拇指朝上手心向上翘起','两拇指平行并拢朝向前方','拇指弯曲握在手掌心','拇指朝下指向地面'],answer:1,explain:'垫球时两拇指平行并拢朝前，手臂外翻使前臂内侧形成平整的垫击面。'},
+{id:10,tags:['垫球'],tagType:'bump',question:'向前移动垫球时，最后一步应是什么步法？',options:['用交叉步移动','跨步或并步保持稳定','跑步冲刺到球前','单脚跳跃接近球'],answer:1,explain:'移动垫球最后一步通常用跨步或并步，以保持身体稳定和平衡。'},
+{id:11,tags:['垫球'],tagType:'bump',question:'以下哪个不是垫球时常见的错误动作？',options:['手臂弯曲不伸直','两臂夹紧伸直成平面','手指交叉握得太紧','膝盖伸直弯腰触球'],answer:1,explain:'两臂夹紧伸直是正确动作而非错误。手臂弯曲、膝盖伸直、握拳过紧都是常见错误。'},
+{id:12,tags:['垫球'],tagType:'bump',question:'垫球时，手臂挥动的主要发力部位是？',options:['仅靠肩关节发力推球','靠蹬地伸膝抬臂全身协调发力','仅靠手腕弹动来发力','仅靠手指拨动来发力'],answer:2,explain:'垫球发力靠蹬地伸膝抬臂的全身协调发力，而非仅靠上肢力量。'},
+{id:13,tags:['垫球'],tagType:'bump',question:'接侧方来球时，应如何移动？',options:['先伸手够球不管脚步到位','先移动到位再面对来球方向垫球','直接单手去够球处理','转身背对来球方向垫球'],answer:1,explain:'接侧方来球应先移动到位，使身体正对来球方向，再稳定垫击。'},
+{id:14,tags:['垫球'],tagType:'bump',question:'垫球时，两手腕应保持什么状态？',options:['手腕分开左右摇摆','两手腕下压并拢成平面','手腕上翘朝天','手腕交替上下摆动'],answer:1,explain:'垫球时两手腕下压并拢，使前臂外侧形成一个平整的击球平面。'},
+{id:15,tags:['垫球'],tagType:'bump',question:'接飘球时垫球动作的特点是？',options:['加大手臂的主动发力顶球','手臂稳定减少主动发力利用球弹力','身体快速后退让开球','用上手传球动作来接球'],answer:1,explain:'接飘球时手臂保持稳定，减少主动发力，因为飘球轨迹不稳定，主动发力易失误。'},
+{id:16,tags:['垫球'],tagType:'bump',question:'训练中"连续自垫"的主要目的是？',options:['增强手臂力量','培养控球能力和手感','提高弹跳力','练习发球过网'],answer:1,explain:'连续自垫主要培养对球的控制能力和手感，是垫球基础训练的重要方法。'},
+{id:17,tags:['垫球'],tagType:'bump',question:'垫球时眼睛应注视什么位置？',options:['低头看自己的手臂','注视来球判断球的方向','看对方球员的站位','看地板和边线'],answer:1,explain:'垫球时眼睛应始终注视来球，根据球路判断移动方向和击球力度。'},
+{id:18,tags:['垫球'],tagType:'bump',question:'关于垫球角度的说法正确的是？',options:['手臂与地面夹角越大球垫得越高','手臂与地面夹角越小球垫得越高','手臂角度不影响出球高度变化','垫球高度只与力量大小有关'],answer:0,explain:'手臂平面与地面夹角越大，球垫得越高；夹角越小，球越平。需根据目标调整。'},
+{id:19,tags:['垫球'],tagType:'bump',question:'一传垫球的目标区域通常是？',options:['对方场地任意位置','二传手附近2到3米范围','己方4号位附近','己方后排底线附近'],answer:1,explain:'一传的目标是将球垫到二传手附近2-3米范围，便于二传组织进攻。'},
+{id:20,tags:['垫球'],tagType:'bump',question:'垫球时身体重心应保持在什么高度？',options:['身体直立重心最高','膝盖弯曲重心降低保持稳定','单腿支撑降低重心','踮起脚尖保持平衡'],answer:1,explain:'垫球时应膝盖弯曲降低重心，使身体处于稳定可移动的预备状态。'},
+{id:21,tags:['垫球'],tagType:'bump',question:'以下哪种情况下应使用单手垫球？',options:['所有来球优先用单手垫球','身体无法及时移动到位时紧急使用','来球速度很慢时才使用','接对方发球都得用单手垫'],answer:1,explain:'单手垫球是紧急补救动作，仅在身体无法及时移动到位的特殊情况下使用。'},
+{id:22,tags:['垫球'],tagType:'bump',question:'鱼跃垫球时，身体着地的顺序是？',options:['膝盖先着地缓冲滑行','胸部先着地再向前滑行救球','双手先撑地缓冲然后胸腹腿依次着地','臀部先着地缓冲'],answer:2,explain:'鱼跃垫球时双手先撑地缓冲，然后胸-腹-腿依次着地滑行，分散冲击力。'},
+{id:23,tags:['垫球'],tagType:'bump',question:'侧垫球时，手臂应如何调整？',options:['保持双臂平行不调整方向','双臂转向侧面在体侧形成垫击面','只用手腕向侧面拨球处理','转动整个身体用正面垫球'],answer:1,explain:'侧垫球时双臂转向侧面，在体侧形成垫击面，同时上体转向来球方向。'},
+{id:24,tags:['垫球'],tagType:'bump',question:'垫球时两臂夹不紧会导致什么问题？',options:['球速会变得更快更好接','击球面不稳定导致垫球方向偏差大','球会垫得比平时更高远','对垫球技术没有明显影响'],answer:1,explain:'两臂夹不紧会导致击球面不稳定，垫球方向难以控制，容易出现偏差。'},
+{id:25,tags:['垫球'],tagType:'bump',question:'快速后退垫球时应采用什么步法？',options:['交叉步后退或跑步后退','小碎步慢慢后退','转身背对球跑','单脚跳着后退'],answer:0,explain:'快速后退垫球时多采用交叉步后退或跑步后退，保持身体朝向球的方向。'},
+{id:26,tags:['垫球'],tagType:'bump',question:'垫球时膝盖超过脚尖过多会导致？',options:['重心不稳容易向前倾倒','可以垫得更高更远','膝盖发力更省力','对垫球没有负面影响'],answer:0,explain:'垫球时膝盖超过脚尖过多会导致重心前倾，身体不稳定，影响垫球质量。'},
+{id:27,tags:['垫球'],tagType:'bump',question:'训练中"对墙垫球"的主要作用是？',options:['增强手臂肌肉力量','提高控球能力和动作的稳定性','反复练习扣球发力动作','提高弹跳的爆发力'],answer:1,explain:'对墙垫球可有效提高控球能力和动作稳定性，是垫球进阶训练方法。'},
+{id:28,tags:['垫球'],tagType:'bump',question:'垫球的击球高度区域应是？',options:['膝关节以下的低位置','髋部至腰部之间约一臂距离','头部正上方的位置','胸部以上的位置'],answer:1,explain:'标准垫球的击球高度在髋部至腰部之间约一臂距离处，便于控制和发力。'},
+{id:29,tags:['垫球'],tagType:'bump',question:'接前场吊球时应采用什么垫球动作？',options:['站立姿势垫球就可以了','快速前冲低姿垫球或鱼跃垫球','先后退再上前去垫球','跳起来用脚踢球处理'],answer:1,explain:'接前场吊球需快速前冲，采用低姿垫球或鱼跃垫球抢在球落地前触球。'},
+{id:30,tags:['垫球'],tagType:'bump',question:'一传到位率训练中，教练常说的"送球"是指？',options:['用力把球打向远距离的击球点位置','控制垫球力量和方向柔和送到目标位置','把球直接垫给对手来发力控制球','用力向上垫得越高越好保持身体姿势'],answer:1,explain:'"送球"指控制垫球力量和方向，柔和地将球送到指定位置，是一传的核心要求。'},
+{id:31,tags:['传球'],tagType:'set',question:'上手传球时，双手应形成什么形状？',options:['手掌完全摊平托球技术动作','手指自然张开呈半球形包球','双手紧握成拳头保持身体姿','双手交叉手指朝下要到位不'],answer:1,explain:'上手传球时手指自然张开呈半球形（"窝"形），与球体吻合。'},
+{id:32,tags:['传球'],tagType:'set',question:'传球时触球部位是？',options:['用手掌心向前推球','用手指指腹触球控制方向','用手背向上弹球','用指尖用力戳球'],answer:1,explain:'传球用手指指腹触球，而非掌心或指尖，指腹接触面积适中、控制力好。'},
+{id:33,tags:['传球'],tagType:'set',question:'传球时，拇指和食指应形成什么形状？',options:['拇指并拢朝向前方保持身体姿','拇指和食指呈近似心形三角形','拇指朝下指向地面的发力更充','拇指外翻朝两侧触球瞬间发力'],answer:1,explain:'传球时拇指和食指呈近似三角形（心形），这是正确的传球手型基础。'},
+{id:34,tags:['传球'],tagType:'set',question:'传球时手腕应保持什么状态？',options:['手腕僵硬保持不动要到位不失误','手腕后仰缓冲后用弹性发力传球','手腕向前弯曲用力触球瞬间发力','手腕左右来回摆动控制方向稳定'],answer:1,explain:'传球时手腕后仰缓冲来球，然后利用手指手腕的弹力将球传出。'},
+{id:35,tags:['传球'],tagType:'set',question:'远距离传球时，应如何调整动作？',options:['仅靠手指手腕力量的发力更充','增加蹬地伸臂用全身协调发力','仅靠手腕爆发力控制方向稳定','加大手腕前后摆动幅度准备姿'],answer:1,explain:'远距离传球需要增加蹬地伸膝伸臂的全身协调发力，仅靠手指手腕力量不够。'},
+{id:36,tags:['传球'],tagType:'set',question:'背向传球时，手腕和身体应如何调整？',options:['手腕向前用力下压','手腕后仰稍后倾借助腰背力量送球','身体向前倾斜发力推球','手臂伸直向前推球'],answer:1,explain:'背传时手腕后仰，身体稍后倾，借助腰背力量将球向背后传出。'},
+{id:37,tags:['传球'],tagType:'set',question:'跳传球时，应在什么时机出手？',options:['在起跳之前就完成传球','跳起后空中最高点利用手臂手指力量传球','身体开始下落时再传球','落回地面站稳后再传球'],answer:1,explain:'跳传球应在跳起后空中最高点时利用手臂和手指力量将球传出。'},
+{id:38,tags:['传球'],tagType:'set',question:'传球时，身体重心应如何变化？',options:['身体始终保持直立状态','蹬地伸膝伸臂手指手腕依次弹球发力','重心持续向后仰','重心左右来回晃动'],answer:1,explain:'传球发力顺序为蹬地→伸膝→伸臂→手指手腕弹球，全身协调发力。'},
+{id:39,tags:['传球'],tagType:'set',question:'二传手调整传球时，面对不到位的来球应如何处理？',options:['直接放弃不去追球','快速移动到球下方利用核心稳定出手','用力把球推过球网去','改用垫球技术处理'],answer:1,explain:'调整传球时二传应快速移动到球下方，稳定身体后再利用核心力量出手。'},
+{id:40,tags:['传球'],tagType:'set',question:'传球时两肘的正确位置是？',options:['两肘向外展开过大','两肘自然下垂约与肩同宽','两肘夹紧贴住身体','两肘上举过头顶'],answer:1,explain:'传球时两肘自然下垂，约与肩同宽，便于手指手腕协调发力。'},
+{id:41,tags:['传球'],tagType:'set',question:'传球时常见的错误手型是？',options:['手指自然张开呈半球形技术','手掌心触碰球像推西瓜一样','拇指和食指呈三角形保持身','手腕向后仰缓冲要到位不失'],answer:1,explain:'用掌心触球是常见错误，称为"推西瓜"式传球，会导致传球不柔和、控制力差。'},
+{id:42,tags:['传球'],tagType:'set',question:'传球的距离主要取决于？',options:['仅由手臂伸展程度来决定','蹬地伸臂速和手指手腕弹力综合决定','仅由手指力量大小来决定','仅由手腕力量来决定'],answer:1,explain:'传球距离取决于蹬地力量、伸臂速度和手指手腕弹力的综合协调。'},
+{id:43,tags:['传球'],tagType:'set',question:'给4号位传高球时，球的弧度应如何？',options:['传球要尽量低平快要快','有一定弧度让攻手有调整选择时间','传球弧线越高越好控制','弧线越低越好'],answer:1,explain:'给4号位高球应具有一定弧度，让攻手有足够的调整时间和选择扣球线路的空间。'},
+{id:44,tags:['传球'],tagType:'set',question:'传快球时，对二传手的要求是？',options:['球要尽量传得高一些','出手快球速快落点精准与攻手配合默契','球要尽量传得远一些','球必须加上强烈旋转'],answer:1,explain:'快球要求二传出手快、球速快、落点精准，与攻手有高度默契。'},
+{id:45,tags:['传球'],tagType:'set',question:'二传手在网前传球时，双脚应如何站位？',options:['双脚平行与肩同宽','左脚在前右脚在后身体侧对球网','双脚紧紧并拢站立','脚尖直接朝向球网'],answer:1,explain:'二传标准站位为左脚在前右脚在后（右撇子），身体侧对球网，便于观察双方情况。'},
+{id:46,tags:['传球'],tagType:'set',question:'传球时手臂应充分伸展到什么程度？',options:['手臂不完全伸展开触球瞬间发力','手臂在传球瞬间充分伸展不过度锁死','手臂过度伸展超过头顶准备姿势站位','手臂完全不参与传球动作移动中保持'],answer:1,explain:'传球时手臂在触球瞬间充分伸展但不过度锁死，保持协调发力。'},
+{id:47,multi:true,multiAnswer:[1,3],tags:['传球'],tagType:'multi',question:'以下哪些不是二传手的核心素质？（多选）',options:['良好的手感和控球能力','强大的弹跳力和摸高','准确的判断与决策能力','拦网高度和弹跳能力'],answer:1,explain:'弹跳力和拦网高度不是二传的核心素质。二传更需要手感、判断和心理稳定。'},
+{id:48,tags:['传球'],tagType:'set',question:'插上传球时，二传手的移动路线是？',options:['从后排直线插到网前','从后排绕过前排队员身后插上','从4号位横移插到网前','从底线冲到网前位置'],answer:1,explain:'插上传球时二传手从后排绕过前排队员身后插上到网前，避免干扰前排跑位。'},
+{id:49,tags:['传球'],tagType:'set',question:'传球时手指应该如何发力？',options:['手指僵直用力推球移动中保持','手指柔和缓冲来球后弹性发力','手指弯曲完全不发力技术动作','手指紧握成拳头再弹来发力控'],answer:1,explain:'传球时手指柔和缓冲来球，然后利用弹性发力将球传出，而非僵硬发力。'},
+{id:50,tags:['传球'],tagType:'set',question:'训练中"对墙传球"的主要目的是？',options:['提高手臂整体力量的击球点位置','培养传球手感和手指手腕弹性控制','反复练习扣球动作来发力控制球','提高场上奔跑速度保持身体姿势'],answer:1,explain:'对墙传球有效培养手感和手指手腕弹性控制能力，是传球基础训练方法。'},
+{id:51,tags:['传球'],tagType:'set',question:'二传手在传球前眼睛应先看哪个方向？',options:['只看球不看其他的','先看来球再观察攻手位置最后决定','只看对方拦网位置','只看球网的位置'],answer:1,explain:'二传应先看来球，再观察攻手位置和对方拦网，触球瞬间做出传球决定。'},
+{id:52,tags:['传球'],tagType:'set',question:'向上自传球训练中，球的高度应控制在？',options:['超过头顶就可以','控制在头顶上方30到50cm保持稳定节奏','越低越好控制','越高越好'],answer:1,explain:'自传球应控制在头顶上方30-50cm，保持稳定节奏，培养球感。'},
+{id:53,tags:['传球'],tagType:'set',question:'传近网球时，出手动作应如何调整？',options:['加大发力推球','出手更快手指手腕弹性更集中控制球不触网','尽量向上传过网','减小发力就可以'],answer:1,explain:'传近网球时出手要更快，手指手腕弹性更集中，控制球不触网。'},
+{id:54,tags:['传球'],tagType:'set',question:'传远网球时，身体应如何调整？',options:['身体后仰发力','增加蹬地伸臂幅度利用腰部力量辅助','只靠手指力量传','跳起来再传球'],answer:1,explain:'传远网球需增加蹬地伸臂幅度，利用腰部旋转力量辅助，全身协调发力。'},
+{id:55,tags:['传球'],tagType:'set',question:'二传手在拦网落地后应立即做什么？',options:['站在原地看的发力更充分','迅速转身找球，准备组织进攻','走向替补席控制方向稳定','与队友击掌准备姿势站位'],answer:1,explain:'二传拦网落地后应迅速转身找球，准备组织进攻，这是二传的基本意识。'},
+{id:56,multi:true,multiAnswer:[1,3],tags:['传球'],tagType:'multi',question:'以下哪些是传球的错误动作？（多选）',options:['手指自然张开呈半球形','用手掌心触球像推西瓜一样','拇指和食指呈三角形控制','用指尖戳球容易挫伤手指'],answer:1,explain:'用手掌心推球和用指尖戳球都是错误动作。正确应用指腹触球。'},
+{id:57,tags:['传球'],tagType:'set',question:'传球时，无名指和小指的作用是？',options:['不参与传球','辅助控制球左右方向稳定球的运行轨迹','主要发力手指','负责旋转球'],answer:1,explain:'无名指和小指辅助控制球的左右方向，保持球的运行轨迹稳定。'},
+{id:58,tags:['传球'],tagType:'set',question:'二传手给后排攻手传球的要点是？',options:['球要高于网口','球传过网口落在后排进攻线前高度适中','球要低于网口','球要贴紧球网'],answer:1,explain:'传后排进攻球需过网口落于后排进攻线前，高度适中让攻手能有效发力。'},
+{id:59,tags:['传球'],tagType:'set',question:'传平拉开球时，球的飞行特点是？',options:['高弧线慢速飞行','快速平飞从二传位置快速到4号或2号位','贴网垂直下落','弧线很高落在底线'],answer:1,explain:'平拉开球指球快速平飞从二传位置到4号位或2号位，利用速度突破拦网。'},
+{id:60,tags:['传球'],tagType:'set',question:'二传手最重要的技术品质是？',options:['弹跳力的击球点位置','传球的稳定性和多变性','扣球力量来发力控制球','拦网高度保持身体姿势'],answer:1,explain:'二传最重要的品质是传球稳定性和多变性，稳定保证组织进攻，多变保证战术丰富。'},
+{id:61,tags:['扣球'],tagType:'spike',question:'扣球的完整技术动作顺序是？',options:['助跑完后起跳击球再落地','助跑起跳空中击球最后落地','原地直接跳起来扣球','先起跳再看球位置'],answer:0,explain:'扣球完整顺序为助跑→起跳→空中击球→落地，四个环节缺一不可。'},
+{id:62,tags:['扣球'],tagType:'spike',question:'扣球时击球点应在什么位置？',options:['身体正上方头顶位置来发力控制球','身体前上方手臂充分伸展的最高点','身体后方够到就扣要到位不失误','身体侧面手臂横摆击球的发力更充'],answer:1,explain:'扣球击球点在身体前上方、手臂充分伸展所能达到的最高点。'},
+{id:63,tags:['扣球'],tagType:'spike',question:'扣球助跑一般采用几步助跑？',options:['只用一步助跑保持身体姿势','两步或三步根据来球灵活调整','必须用四步以上助跑的发力更','不需要助跑原地扣球触球瞬间'],answer:1,explain:'扣球助跑一般用两步或三步，根据来球速度和弧度灵活调整步数。'},
+{id:64,tags:['扣球'],tagType:'spike',question:'4号位扣球时，助跑方向应与球网成什么角度？',options:['助跑方向平行于球网要到位不','与球网约成45度角切入起跳','垂直于球网方向助跑触球瞬间','背对球网方向助跑控制方向稳'],answer:1,explain:'4号位扣球助跑与球网约成45°角，便于最后转身面对球网起跳发力。'},
+{id:65,tags:['扣球'],tagType:'spike',question:'扣球起跳时，双臂的作用是？',options:['双臂自然下垂不动的发力更充分','双臂从后向前上方摆动带动身体上升','双臂向两侧展开控制方向稳定','双臂向后摆到底准备姿势站位'],answer:1,explain:'扣球起跳时双臂从后向前上方摆动，利用摆臂带动身体上升增加弹跳高度。'},
+{id:66,tags:['扣球'],tagType:'spike',question:'扣球的鞭打动作中，发力顺序是？',options:['手腕最先发力加速','腰腹肩到上臂前臂手腕依次传导','肩关节最早开始发力','手臂最先开始发力'],answer:1,explain:'扣球鞭打发力顺序为腰腹→肩→上臂→前臂→手腕，依次传导加速。'},
+{id:67,tags:['扣球'],tagType:'spike',question:'扣直线球时，手腕应如何控制？',options:['手腕外翻使球向外飞','手腕内扣使球沿直线飞行','手腕完全放松不下压','手腕直接向下压'],answer:1,explain:'扣直线球时手腕内扣，使击球方向沿直线飞出，避开拦网手。'},
+{id:68,tags:['扣球'],tagType:'spike',question:'扣斜线球时，手腕应如何控制？',options:['手腕用力向内扣准备姿势站位','手腕外翻或转腕使球向斜线飞','手腕向上挑起的击球点位置','手腕直接下压到底技术动作要'],answer:1,explain:'扣斜线球时手腕外翻或转腕，使球向斜线方向飞行，改变球路。'},
+{id:69,tags:['扣球'],tagType:'spike',question:'打手出界技术要求扣球时击球的什么部位？',options:['击打球的中部偏上','击球后下部使球上飞触拦网手后出界','击打球的上部位置','打球的侧面部位'],answer:1,explain:'打手出界需击球后下部，使球向上飞起触及拦网手后出界。'},
+{id:70,tags:['扣球'],tagType:'spike',question:'扣球空中动作时，非扣球手臂的作用是？',options:['完全不参与动作的击球点位置','非扣球手臂弯曲协助保持空中平衡','向后伸直不动来发力控制球','向下垂放不发力保持身体姿势'],answer:1,explain:'非扣球手臂弯曲协助保持空中身体平衡，避免身体旋转过度。'},
+{id:71,tags:['扣球'],tagType:'spike',question:'扣球落地时应如何缓冲？',options:['膝盖挺直落地技术动作要领','膝盖弯曲缓冲双脚前后分开落地','只用单脚落地保持身体姿势','脚跟先着地要到位不失误'],answer:1,explain:'扣球落地时应膝盖弯曲缓冲，双脚前后分开落地，分散冲击力保护膝盖。'},
+{id:72,tags:['扣球'],tagType:'spike',question:'扣近网球时，击球点应如何调整？',options:['击球点在球的后下部使球向前上方飞出避免触网','击球点在球的正上方','击球点在球的侧面位置','击球点在球的前部'],answer:0,explain:'扣近网球时击球点在球的后下部，使球向前上方飞出，避免触网。'},
+{id:73,tags:['扣球'],tagType:'spike',question:'扣远网球时，应如何调整？',options:['全力扣杀不过网','增加收腹力量将球用力打过网','轻吊处理过网','不用助跑直接扣'],answer:1,explain:'扣远网球需增加收腹力量，利用腰腹力量将球用力打过网。'},
+{id:74,tags:['扣球'],tagType:'spike',question:'后排进攻时，起跳位置应在什么线之后？',options:['中线之后','3米进攻线之后','底线之后','任意位置'],answer:1,explain:'后排进攻的起跳位置必须在3米进攻线之后，落地可以落在3米线前。'},
+{id:75,tags:['扣球'],tagType:'spike',question:'调整攻时，面对不到位的传球应如何处理？',options:['强行扣球','调整步法和起跳时机在最高点争取扣球','放弃扣球改为吊球','直接推球过网'],answer:1,explain:'调整攻时需调整步法和起跳时机，在最高点争取扣球，而非强行出手。'},
+{id:76,tags:['扣球'],tagType:'spike',question:'扣球时最常见的错误助跑是？',options:['助跑步幅过大','助跑节奏与来球不匹配过早或过晚起跳','助跑速度太慢','助跑方向错误'],answer:1,explain:'助跑节奏与来球不匹配是最常见错误——过早起跳够不到球，过晚起跳来不及发力。'},
+{id:77,tags:['扣球'],tagType:'spike',question:'扣球时腰腹收腹的主要作用是？',options:['增加滞空时间控制方向稳','增加上肢挥拍力量和速度','减少起跳高度移动中保持','保护膝盖的击球点位置'],answer:1,explain:'扣球时收腹增加上肢挥拍力量和速度，是鞭打动作中力量传导的关键环节。'},
+{id:78,tags:['扣球'],tagType:'spike',question:'扣球训练中"挥臂练习"的主要目的是？',options:['增强腿部力量准备姿势站位','建立正确的挥臂轨迹和加速模式','提高弹跳的击球点位置','提高移动速度技术动作要领'],answer:1,explain:'挥臂练习建立正确的挥臂轨迹和加速模式，是扣球技术训练的基础环节。'},
+{id:79,tags:['扣球'],tagType:'spike',question:'扣球时，肘部在挥臂过程中的正确轨迹是？',options:['肘部低于肩关节位置','肘部领先于手从肩高向前上方移动前臂加速甩出','肘部后摆幅度过大','肘部保持不动'],answer:1,explain:'扣球时肘部领先于手从肩关节高度向前上方移动，前臂随后加速甩出（"拉弓"动作）。'},
+{id:80,tags:['扣球'],tagType:'spike',question:'扣球起跳时双脚应如何落地？',options:['双脚并拢起跳','双脚前后开立起跳最后一步跨大制动','双脚交叉起跳动','单脚起跳'],answer:1,explain:'扣球起跳最后一步跨大制动，双脚前后开立起跳，将水平速度转化为垂直高度。'},
+{id:81,tags:['扣球'],tagType:'spike',question:'扣小斜线时，球的落点应在？',options:['对方底线附近','对方场地靠近球网的直线区域靠近6号位','对方场地中部','界外区域'],answer:1,explain:'小斜线扣球的落点在对方场地靠近球网的直线区域（6号位附近）。'},
+{id:82,tags:['扣球'],tagType:'spike',question:'扣球时过早打开身体（转体过早）会导致？',options:['扣球更有力量','力量分散球易扣出界外或失去方向控制','扣球更准更稳','增加击球点高度'],answer:1,explain:'扣球时过早打开身体会导致力量分散、方向失控，球易扣出界外。'},
+{id:83,tags:['扣球'],tagType:'spike',question:'处理乱球时，扣球手应怎么办？',options:['强行全力扣杀','先抢到球下方根据球高选扣球或处理过网','放弃处理不过网','直接推给裁判'],answer:1,explain:'处理乱球时先抢到球下方，根据球的高度和位置选择扣球、吊球或处理过网。'},
+{id:84,tags:['扣球'],tagType:'spike',question:'扣球时，击球瞬间手腕应做什么动作？',options:['手腕僵硬不发力','手腕快速下压压腕给球施加向下旋转','手腕向上挑起','手腕左右摆动'],answer:1,explain:'扣球击球瞬间手腕快速下压压腕，给球施加向下的旋转，使球加速落入对方场地。'},
+{id:85,tags:['扣球'],tagType:'spike',question:'原地扣球与助跑扣球最大的区别是？',options:['没有区别','助跑扣球有水平速度转化可以获得更高击球点和更大力量','原地扣球更准','助跑扣球更简单'],answer:1,explain:'助跑扣球通过助跑将水平速度转化为向上的动能，获得更高的击球点和更大的扣球力量。'},
+{id:86,tags:['扣球'],tagType:'spike',question:'扣球手面对双人拦网时应选择的策略是？',options:['永远打直线','根据拦网手空隙选打手出界超手扣球或轻吊','永远打斜线','放弃扣球'],answer:1,explain:'面对双人拦网应观察拦网手之间的空隙，选择打手出界、超手扣球或轻吊。'},
+{id:87,tags:['扣球'],tagType:'spike',question:'轻吊球与扣球的主要技术区别是？',options:['轻吊不用助跑','轻吊用柔和手指手腕控制将球吊过拦网手落入空档','轻吊起跳高度更低','轻吊不用挥臂'],answer:1,explain:'轻吊用柔和手指手腕控制，轻轻将球吊过拦网手落入对方空档。'},
+{id:88,tags:['扣球'],tagType:'spike',question:'2号位扣球与4号位扣球在技术上的主要区别是？',options:['没有区别','助跑方向击球肩不同2号位右手球员需要转体更多','2号位不需要助跑','2号位不需要起跳'],answer:1,explain:'2号位扣球因在右手球员的左侧，需要更多转体和调整步法。'},
+{id:89,tags:['扣球'],tagType:'spike',question:'扣球时"超手扣球"的技术要点是？',options:['从拦网手的侧面扣球移动中保持稳定','利用更高的击球点在拦网手正上方将球扣过','从拦网手下方扣球技术动作要领','不跳直接扣来发力控制球'],answer:1,explain:'超手扣球利用更高的击球点，从拦网手正上方将球扣过，需要弹跳力和击球高度优势。'},
+{id:90,tags:['扣球'],tagType:'spike',question:'扣球训练中，"海绵垫扣球"练习的主要目的是？',options:['练习弹跳的击球点位置','消除"怕触网"心理，建立正确的上进动作','练习力量来发力控制球','练习跑动保持身体姿势'],answer:1,explain:'海绵垫扣球让队员敢于靠近球网扣球，消除怕触网心理，建立正确上进动作。'},
+{id:91,tags:['发球'],tagType:'serve',question:'上手飘球的技术核心是？',options:['用全力扣杀技术动作要领','击球瞬间手腕固定，手臂短促发力，使球不旋转','用手掌推球保持身体姿势','用拳头击球要到位不失误'],answer:1,explain:'上手飘球核心是击球瞬间手腕固定、手臂短促发力，球不旋转、轨迹飘忽。'},
+{id:92,tags:['发球'],tagType:'serve',question:'上手发球击球时，手掌应接触球的什么部位？',options:['手掌击球上部来发力控制球','手掌根部击球的后下部，手腕固定','指尖击球要到位不失误','手背击球的发力更充分'],answer:1,explain:'上手发球用手掌根部击球后下部，手腕固定，使球向前飞行不旋转。'},
+{id:93,tags:['发球'],tagType:'serve',question:'跳发球比上手飘球更具威胁的主要原因是什么？',options:['跳发球可以用双手','起跳高度获得更高击球点配合前冲力产生更大球速','跳发球不需要助跑','跳发球可以发球上网'],answer:1,explain:'跳发球通过助跑起跳获得更高击球点和前冲力，球速更快、旋转更强。'},
+{id:94,tags:['发球'],tagType:'serve',question:'发球时抛球的高度和位置应如何控制？',options:['抛得越高越好要到位不失误','抛球高度适中（约高于击球点50-100cm），位置在击球臂前上方','抛在头顶正上方触球瞬间发力','抛在身体后方控制方向稳定'],answer:1,explain:'抛球高度适中约高于击球点50-100cm，位置在击球臂前上方，便于发力。'},
+{id:95,tags:['发球'],tagType:'serve',question:'发飘球时，击球瞬间手腕为什么要固定？',options:['为了不受伤的发力更充分','为了不让球产生旋转，使球飞行轨迹飘忽不定','为了发力更大控制方向稳定','为了控制方向准备姿势站位'],answer:1,explain:'发飘球时手腕固定使球不旋转，空气阻力不均匀导致球轨迹飘忽不定。'},
+{id:96,tags:['发球'],tagType:'serve',question:'跳发球的助跑节奏是？',options:['助跑速度越来越慢触球瞬间发力','助跑由慢到快，最后两步加速制动起跳','匀速助跑准备姿势站位','先快后慢移动中保持稳定'],answer:1,explain:'跳发球助跑由慢到快加速，最后两步跨大制动制动起跳，将水平速度转化为高度。'},
+{id:97,tags:['发球'],tagType:'serve',question:'发球时，非持球手臂的作用是？',options:['不参与动作控制方向稳定','持球臂将球平稳抛起后自然下落','抛球后用力后摆移动中保持稳定','抛球后向前推的击球点位置'],answer:1,explain:'非持球手臂将球平稳抛起后自然下落，不干扰击球动作。'},
+{id:98,tags:['发球'],tagType:'serve',question:'"找人"发球战术的目的是？',options:['把球发给对方最好的球员','发到对方一传能力差的队员或换位混乱区域','随意发球','发球越用力越好'],answer:1,explain:'找人发球针对对方一传能力差的队员或换位混乱的区域，破坏对方进攻组织。'},
+{id:99,tags:['发球'],tagType:'serve',question:'以下哪种情况下发球容易失误？',options:['抛球稳定时移动中保持稳定','抛球不稳定（过高/过低/偏左/偏右）导致击球点不准','助跑节奏稳定时技术动作要领','击球手腕固定时来发力控制球'],answer:1,explain:'抛球不稳定是发球失误的主要原因，抛球不稳则击球点难以准确控制。'},
+{id:100,tags:['发球'],tagType:'serve',question:'跳飘球与站立飘球的主要区别是？',options:['没有区别的击球点位置','跳飘球通过起跳增加击球高度，持球时间更短，球过网更低更快','站立飘球更准来发力控制球','跳飘球更省力保持身体姿势'],answer:1,explain:'跳飘球通过起跳增加击球高度，持球时间更短，球过网更低更快。'},
+{id:101,tags:['发球'],tagType:'serve',question:'大力跳发球时，腰腹收腹的作用是？',options:['增加弹跳高度技术动作要领','增加上肢发力力量，使扣球式的发球更有威力','保持身体平衡保持身体姿势','减少受伤风险要到位不失误'],answer:1,explain:'大力跳发球时收腹增加上肢发力力量，使发球力量更大、球速更快。'},
+{id:102,tags:['发球'],tagType:'serve',question:'发球稳定性训练中，连续发球测试的合格标准一般为？',options:['连续发10次过网率>90%','连续发5次过网即可保持身体','过网就行，不管落点要到位不','发球越大力越好的发力更充分'],answer:0,explain:'发球稳定性训练中连续10次发球过网率>90%是基本合格标准。'},
+{id:103,tags:['发球'],tagType:'serve',question:'发长飘球时，球的目标落点应在？',options:['对方前排保持身体姿势','对方后排靠近底线区域','对方场地中央的发力更','界外触球瞬间发力'],answer:1,explain:'发长飘球目标落点在对方后排靠近底线区域，拉开对方进攻阵型。'},
+{id:104,tags:['发球'],tagType:'serve',question:'发短飘球时，球的目标落点应在？',options:['对方后排要到位不失误','对方前排靠近球网区域','对方场地中央触球瞬间','己方场地控制方向稳定'],answer:1,explain:'发短飘球目标落点在对方前排靠近球网区域，迫使对方一传队员前冲接球。'},
+{id:105,tags:['发球'],tagType:'serve',question:'发球时身体重心应如何移动？',options:['重心始终在后脚的发力更充分','重心由后脚移到前脚，利用身体前冲力量','重心左右晃动控制方向稳定','重心不动准备姿势站位'],answer:1,explain:'发球时重心由后脚移到前脚，利用身体前移的力量增加发球威力。'},
+{id:106,tags:['发球'],tagType:'serve',question:'发球时击球臂的正确挥动轨迹是？',options:['从体侧横向挥出触球瞬间发','从后下方向前上方挥臂击球','从上往下扣准备姿势站位','从后往前平推移动中保持稳'],answer:1,explain:'发球击球臂从后下方向前上方挥臂击球，利用全身旋转力量。'},
+{id:107,tags:['发球'],tagType:'serve',question:'抛球时球离开手后，持球手应如何处理？',options:['保持在原地控制方向稳定','自然放下或收回体内侧，不干扰击球','向上举起移动中保持稳定','向前伸出的击球点位置'],answer:1,explain:'抛球后持球手自然放下或收回体内侧，避免干扰击球臂的挥动。'},
+{id:108,tags:['发球'],tagType:'serve',question:'发球时最常见的错误是？',options:['抛球太高准备姿势站位','击球时眼睛没有看球或抛球位置不稳定','抛球太低的击球点位置','助跑步数多技术动作要领'],answer:1,explain:'发球时眼睛不看球或抛球位置不稳定是最常见错误，导致击球点不准确。'},
+{id:109,tags:['发球'],tagType:'serve',question:'以下哪个不属于有效的发球战术？',options:['找人发球战术','找区发球战术','全力发到场地中央不区分目标','改变发球节奏'],answer:2,explain:'不区分目标地全力发到场地中央是最低效的发球方式，应结合找人、找区策略。'},
+{id:110,tags:['发球'],tagType:'serve',question:'发球过网的球必须通过什么区域？',options:['球网上空的任何区域','必须通过两根标志杆之间','必须通过球网中间','必须通过球网两侧'],answer:1,explain:'发球必须通过两根标志杆之间飞入对方场地，从外侧通过视为出界。'},
+{id:111,tags:['发球'],tagType:'serve',question:'跳发球起跳时双脚应落在什么位置？',options:['跳起后可以踩到中线技术动作要领','起跳点距离底线约2-3步，落地在底线内','起跳点必须在底线后','起跳点任意要到位不失误'],answer:2,explain:'跳发球起跳点必须在底线之后，不能踩线，落地可在底线内。'},
+{id:112,tags:['发球'],tagType:'serve',question:'发球时的准备姿势应该是？',options:['身体放松站立来发力控制球','两脚前后开立，膝盖微屈，身体稍前倾，双手持球于体前','双脚并拢直立要到位不失误','单脚站立的发力更充分'],answer:1,explain:'发球准备时两脚前后开立、膝盖微屈、身体稍前倾、双手持球于体前，保持稳定。'},
+{id:113,tags:['发球'],tagType:'serve',question:'训练中"对网发球"练习的主要目的是？',options:['增强力量保持身体姿势','提高发球过网的成功率和落点控制能力','提高弹跳的发力更充分','提高移动速度触球瞬间发力'],answer:1,explain:'对网发球练习提高发球过网成功率和落点控制能力，是发球基础训练。'},
+{id:114,tags:['发球'],tagType:'serve',question:'发球时，击球臂肘部的正确位置是？',options:['肘部低于肩要到位不失误','肘部约与肩同高或稍高于肩','肘部高于头顶触球瞬间发力','肘部夹紧身体控制方向稳定'],answer:1,explain:'发球时肘部约与肩同高或稍高于肩，便于利用手臂长度和发力。'},
+{id:115,tags:['发球'],tagType:'serve',question:'发球命中率不高时，首先应检查什么？',options:['发球力量是否够大的发力更充分','抛球的稳定性和击球点的准确性','助跑速度是否够快控制方向稳定','发球姿势是否美观准备姿势站位'],answer:1,explain:'发球命中率不高时首先检查抛球稳定性和击球点准确性，这是发球的基础。'},
+{id:116,tags:['发球'],tagType:'serve',question:'"找区"发球战术中，常见的发球区域是？',options:['对方场地中央位置','1号位5号位6号位等区域结合部破坏一传','对方4号位','对方2号位'],answer:1,explain:'找区发球常攻击对方1号位、5号位、6号位等不同区域的结合部，利用落点变化破坏一传。'},
+{id:117,tags:['发球'],tagType:'serve',question:'发球时，身体面对的方向应该是？',options:['面对球网控制方向稳定','侧对球网（非击球肩朝向球网）','背对球网移动中保持稳定','面对地面的击球点位置'],answer:1,explain:'发球时侧对球网，非击球肩朝向球网，便于利用身体旋转力量发球。'},
+{id:118,tags:['发球'],tagType:'serve',question:'跳发球时空中击球动作与扣球的主要区别是？',options:['没有区别准备姿势站位','跳发球空中击球更强调击球的后上部，使球向前下方快速飞行','跳发球不需要压腕的击球点位置','跳发球不需要收腹技术动作要领'],answer:1,explain:'跳发球空中击球更强调击球后上部，使球向前下方快速飞行过网。'},
+{id:119,tags:['发球'],tagType:'serve',question:'发球训练中，"目标区发球"练习的方法是？',options:['将球发到对方场地上标记的特定目标区域','随意发球到对方场地的击球点位置','只求发过网技术动作要领','发到己方场地来发力控制球'],answer:0,explain:'目标区发球指在对方场地上标记特定区域，反复练习将球发入该区域，提高落点控制。'},
+{id:120,tags:['发球'],tagType:'serve',question:'发球时，身体扭转的主要作用是？',options:['增加视觉角度的击球点位置','利用躯干旋转力量增加发球力量和速度','减少受伤风险来发力控制球','保持平衡保持身体姿势'],answer:1,explain:'发球时躯干旋转利用核心力量增加发球力量和速度，是发力链条的重要环节。'},
+{id:121,tags:['拦网'],tagType:'block',question:'单人拦网时，双手应保持什么姿势？',options:['双手握拳向前推出','双手向前上方伸出手指张开手腕下压','双手举直不动','双手下垂'],answer:1,explain:'拦网正确手型为双手向前上方伸出、手指张开、手腕下压，覆盖最大面积。'},
+{id:122,tags:['拦网'],tagType:'block',question:'拦网起跳的时机应如何把握？',options:['跟随扣球者同时起跳来发力控制球','观察扣球者的起跳，在其起跳后即将击球时起跳','扣球者落地时起跳要到位不失误','球过网后起跳的发力更充分'],answer:1,explain:'拦网在扣球者起跳后即将触球前的瞬间起跳，过早或过晚都会影响拦网效果。'},
+{id:123,tags:['拦网'],tagType:'block',question:'拦网时手臂应伸过球网到什么程度？',options:['手臂不过球网保持身体姿势','在不触网的前提下尽量伸过网口上方，以封堵扣球线路','手臂完全过网的发力更充分','不伸手臂触球瞬间发力'],answer:1,explain:'在不触网前提下尽量伸过网口上方封堵扣球线路，但不能触网。'},
+{id:124,tags:['拦网'],tagType:'block',question:'双人拦网时，两名队员应如何配合？',options:['各拦各的要到位不失误','并拢手型、不留缝隙，外侧手内倾封堵线路，协同移动','一人拦网一人防守触球瞬间发力','随便站位控制方向稳定'],answer:1,explain:'双人拦网需并拢手型不留缝隙，外侧手内倾封堵线路，协同移动。'},
+{id:125,tags:['拦网'],tagType:'block',question:'拦网落地后应立即做什么？',options:['站在原地的发力更充分','落地后转身面向球，准备防守','走向替补席控制方向稳定','与队友击掌准备姿势站位'],answer:1,explain:'拦网落地后应转身面向球准备防守，这是拦防衔接的关键。'},
+{id:126,tags:['拦网'],tagType:'block',question:'移动拦网时，应采用什么步法？',options:['跑步移动','并步或交叉步保持身体面向球网','单脚跳移移动','后退小碎步'],answer:1,explain:'移动拦网采用并步或交叉步，保持身体面向球网，便于随时起跳拦网。'},
+{id:127,tags:['拦网'],tagType:'block',question:'拦网时眼睛应注视哪里？',options:['看自己的手控制方向稳定','始终注视扣球者的动作和球的运行轨迹','看地面移动中保持稳定','看对方的站位的击球点位置'],answer:1,explain:'拦网时应注视扣球者的动作和球的运行轨迹，根据判断选择起跳时机和手型。'},
+{id:128,tags:['拦网'],tagType:'block',question:'拦快球时，起跳时机应如何调整？',options:['和扣普通球一样','快球需提前判断与二传出球同步或稍提前起跳','等球过网后再跳','不起跳'],answer:1,explain:'拦快球需提前判断，在二传出球时或稍提前起跳，因为快球节奏极快。'},
+{id:129,tags:['拦网'],tagType:'block',question:'拦网时最常见的错误是什么？',options:['手腕下压过多移动中保持稳定','起跳过早或过晚，导致拦不到球或触网','手臂不伸直技术动作要领','手指并拢过紧来发力控制球'],answer:1,explain:'拦网最常见错误是起跳时机不准——过早下落时球才过网，过晚则来不及封堵。'},
+{id:130,tags:['拦网'],tagType:'block',question:'拦网时双手之间的间距应为多少？',options:['双手紧贴在一起的击球点位置','双手之间距离约一个球的宽度（不超过球的直径），不留空隙','间距10-20cm来发力控制球','双手分开超过肩宽保持身体姿势'],answer:1,explain:'拦网时双手间距约一个球的宽度，球无法从两手之间穿过。'},
+{id:131,tags:['拦网'],tagType:'block',question:'拦网时，手指应该保持什么状态？',options:['手指握拳技术动作要领','手指自然张开且保持紧张，以便球碰到手时能有效阻挡','手指放松保持身体姿势','手指交叉要到位不失误'],answer:1,explain:'拦网时手指自然张开并保持适当紧张，球碰到手时能有效阻挡而非被击穿。'},
+{id:132,tags:['拦网'],tagType:'block',question:'面对高点强攻时，拦网策略应如何调整？',options:['放弃拦网防扣球','降低起跳点重点封堵斜线保护后排防区','跳得更高去拦网','后退不拦网'],answer:1,explain:'面对高点强攻拦网应重点封堵斜线，保护后排防守，因为斜线是主要得分线路。'},
+{id:133,tags:['拦网'],tagType:'block',question:'拦网时，身体与球网的距离应为？',options:['紧贴球网保持身体姿势','约10-20cm距离，便于伸手过网又不触网','30-40cm的发力更充分','50cm以上触球瞬间发力'],answer:1,explain:'拦网时身体距球网约10-20cm，既便于伸手过网封堵又不触网。'},
+{id:134,tags:['拦网'],tagType:'block',question:'拦网训练中"连续移动拦网"训练的主要目的是？',options:['提高弹跳力要到位不失误','提高移动步法的灵活性和连续起跳能力','提高拦网力量触球瞬间发力','提高手臂力量控制方向稳定'],answer:1,explain:'连续移动拦网训练提高移动步法灵活性和连续起跳能力，适应比赛中多回合拦网。'},
+{id:135,tags:['拦网'],tagType:'block',question:'拦网时起跳后身体在空中应保持什么姿态？',options:['身体后仰的发力更充分','身体直立或稍前倾，保持稳定','身体左右摇摆控制方向稳定','身体后仰过多准备姿势站位'],answer:1,explain:'拦网时空中身体直立或稍前倾，保持稳定，不过度后仰。'},
+{id:136,tags:['拦网'],tagType:'block',question:'拦网时，外侧手的特殊作用是？',options:['不需要特殊处理触球瞬间发力','外侧手向内倾斜，封堵对手的直线扣球线路','外侧手上举准备姿势站位','外侧手下压移动中保持稳定'],answer:1,explain:'拦网外侧手向内倾斜封堵直线扣球线路，防止球从外侧穿过。'},
+{id:137,tags:['拦网'],tagType:'block',question:'三人拦网时，中间队员的主要职责是？',options:['不参与拦网','中间队员核心与两侧配合封堵中间区域','只负责起跳','只负责喊'],answer:1,explain:'三人拦网时中间队员是核心，与两侧队员协同封堵中间区域。'},
+{id:138,tags:['拦网'],tagType:'block',question:'拦网时，手掌应朝向什么方向？',options:['手掌朝上准备姿势站位','手掌朝向对方场地，掌心正对来球方向','手掌朝向自己的击球点位置','手掌朝向地面技术动作要领'],answer:1,explain:'拦网时掌心朝向对方场地正对来球方向，将球拦回对方场地。'},
+{id:139,tags:['拦网'],tagType:'block',question:'拦网时触网犯规的原因通常是？',options:['手臂过网太多移动中保持稳定','起跳太近球网或空中身体失去控制碰到球网','手举太高技术动作要领','弹跳不够来发力控制球'],answer:1,explain:'拦网触网通常因起跳太靠近球网或空中身体失去控制碰到球网。'},
+{id:140,tags:['拦网'],tagType:'block',question:'拦网手型在触球瞬间应做什么？',options:['手放松的击球点位置','手腕下压，手指保持紧张，将球拦回对方场地','手收回来发力控制球','手左右摆动保持身体姿势'],answer:1,explain:'拦网触球瞬间手腕下压，手指保持紧张，将球拦回对方场地。'},
+{id:141,tags:['拦网'],tagType:'block',question:'拦网的基本功训练中，"原地拦网手型练习"的重点是？',options:['练弹跳技术动作要领','建立正确的手型、手臂角度和身体姿态','练力量保持身体姿势','练速度要到位不失误'],answer:1,explain:'原地拦网手型练习重点建立正确的手型、手臂角度和身体姿态，是拦网的基础。'},
+{id:142,tags:['拦网'],tagType:'block',question:'拦对方后排进攻时，起跳时机应如何把握？',options:['不用起跳来拦网','后排进攻距网远需比拦前排扣球稍晚起跳','提前起跳去拦','随意起跳'],answer:1,explain:'拦后排进攻时因起跳点距网较远，球飞行时间更长，拦网起跳需比拦前排稍晚。'},
+{id:143,tags:['拦网'],tagType:'block',question:'拦网时，肘部应保持什么状态？',options:['肘部弯曲保持身体姿势','肘部在起跳后基本伸直，但不过度锁死','肘部后摆的发力更充分','肘部低于肩触球瞬间发力'],answer:1,explain:'拦网起跳后肘部基本伸直但不过度锁死，保持手臂稳定封堵面积。'},
+{id:144,tags:['拦网'],tagType:'block',question:'"盖帽式拦网"的技术特点是？',options:['手型向两侧分开要到位不失误','双手呈"盖帽"状罩住球的上方，将球直接拦回对方场地','手握拳触球瞬间发力','手不伸过球网控制方向稳定'],answer:1,explain:'盖帽式拦网双手呈罩状盖住球上方，将球直接拦回对方场地，高度要求较高。'},
+{id:145,tags:['拦网'],tagType:'block',question:'拦网训练中，判断扣球线路练习的最佳辅助方法是？',options:['看扣球者的站位的发力更充分','观察扣球者躯干打开方向和挥臂轨迹来判断扣球线路','看二传位置控制方向稳定','看球网准备姿势站位'],answer:1,explain:'观察扣球者躯干方向和挥臂轨迹是判断扣球线路的关键——躯干正对方向通常是扣球方向。'},
+{id:146,tags:['防守'],tagType:'defense',question:'后排防守时，基本准备姿势应该是？',options:['身体直立触球瞬间发力','膝盖深屈，上体前倾，重心低，两臂自然前伸','身体后仰准备姿势站位','单膝跪地移动中保持稳定'],answer:1,explain:'后排防守准备姿势为膝盖深屈、上体前倾、重心低、两臂自然前伸，随时准备移动。'},
+{id:147,tags:['防守'],tagType:'defense',question:'防守时眼睛应注视哪里？',options:['看自己的手控制方向稳定','注视对方的扣球手和球的飞行轨迹','看地板移动中保持稳定','看队友的击球点位置'],answer:1,explain:'防守时应注视对方扣球手和球的飞行轨迹，预判扣球线路。'},
+{id:148,tags:['防守'],tagType:'defense',question:'防守时，身体重心应保持在？',options:['后脚跟准备姿势站位','前脚掌上，便于快速启动移动','全脚掌的击球点位置','脚外侧技术动作要领'],answer:1,explain:'防守时重心在前脚掌，便于快速启动向各个方向移动。'},
+{id:149,tags:['防守'],tagType:'defense',question:'防扣球时，面对重扣球的正确反应是？',options:['躲开避免被打移动中保持稳定','保持低姿，手臂前伸，利用手臂角度将球垫起','跳起来挡技术动作要领','转身背对来发力控制球'],answer:1,explain:'防重扣时应保持低姿、手臂前伸，利用手臂角度将来球垫起而非硬挡。'},
+{id:150,tags:['防守'],tagType:'defense',question:'防守吊球时，应如何移动？',options:['站在原地的击球点位置','快速前冲低姿接球，在球落地前触球','后退来发力控制球','转身跑保持身体姿势'],answer:1,explain:'防吊球需快速前冲低姿接球，抢在球落地前触球，通常从后排冲向网前。'},
+{id:151,tags:['防守'],tagType:'defense',question:'防守中"卡位"指的是？',options:['站在原地不动等球','根据对方扣球习惯和场上形势预判移动到扣球线路上','随意站位','跟着球跑'],answer:1,explain:'卡位是根据对方扣球习惯和场上形势，提前预判移动到最可能的扣球线路上。'},
+{id:152,tags:['防守'],tagType:'defense',question:'防守时，手臂应放在什么位置？',options:['手臂自然下垂来发力控制球','两手前伸，手臂与身体约成45°-60°角','手臂上举要到位不失误','手臂背在身后的发力更充分'],answer:1,explain:'防守时两手前伸，手臂与身体约成45°-60°角，准备随时垫球。'},
+{id:153,tags:['防守'],tagType:'defense',question:'防起球后，第一反应应该是？',options:['庆祝保持身体姿势','迅速起身寻找球的位置，准备下一次防守或进攻','等待裁判判罚的发力更充分','回到原位触球瞬间发力'],answer:1,explain:'防起球后应迅速起身寻找球的位置，准备下一次防守或进攻。'},
+{id:154,tags:['防守'],tagType:'defense',question:'防守训练中"滚翻救球"训练的主要目的是？',options:['练习力量要到位不失误','提高对低远球的防守覆盖范围，以及防起球后的自我保护能力','提高速度触球瞬间发力','提高弹跳控制方向稳定'],answer:1,explain:'滚翻救球训练提高低远球防守覆盖范围和自我保护能力。'},
+{id:155,tags:['防守'],tagType:'defense',question:'防守站位的基本原则是？',options:['固定站位不动的发力更充分','根据对方扣球线路和本方拦网布置调整防守位置','站在队友后面控制方向稳定','站得越远越好准备姿势站位'],answer:1,explain:'防守站位需根据对方扣球线路和本方拦网布置动态调整位置。'},
+{id:156,tags:['防守'],tagType:'defense',question:'防对方快攻时，防守队员应如何准备？',options:['站位靠后','站位前提缩短反应距离准备快速向各方向移动','站在原地','站位靠边'],answer:1,explain:'防快攻时防守站位应前提，缩短反应距离，因快攻球速极快。'},
+{id:157,tags:['防守'],tagType:'defense',question:'防守时，两脚之间的距离应为？',options:['双脚并拢控制方向稳','略宽于肩，保持稳定','比肩宽很多移动中保','前后距离超过一步'],answer:1,explain:'防守时两脚距离略宽于肩，保持稳定的低重心。'},
+{id:158,tags:['防守'],tagType:'defense',question:'防守失误最常见的原因是？',options:['力量不足准备姿势站位','移动不到位（预判错误或反应慢了）','手臂太短的击球点位置','视力不好技术动作要领'],answer:1,explain:'防守失误最常见原因是预判错误或移动不到位，而非力量不够。'},
+{id:159,tags:['防守'],tagType:'defense',question:'"鱼跃救球"技术使用的前提是？',options:['任何时候都可用','球距离身体较远常规移动无法及时到位时使用','球速慢时使用','球很高时使用'],answer:1,explain:'鱼跃救球在球距离身体较远、常规移动无法及时到位时才使用。'},
+{id:160,tags:['防守'],tagType:'defense',question:'防守时，上体前倾的角度大约是？',options:['身体直立的击球点位置','上体前倾约10°-20°','上体前倾约45°来发力控','上体后仰保持身体姿势'],answer:1,explain:'防守时上体前倾约10°-20°，保持低重心同时不影响视线。'},
+{id:161,tags:['防守'],tagType:'defense',question:'防守训练中"接教练扣球"练习的目的是？',options:['练习扣球技术动作要领','提高面对真实扣球时的防守反应和垫球稳定性','练习发球保持身体姿势','练习传球要到位不失误'],answer:1,explain:'接教练扣球练习模拟比赛中的防守场景，提高防守反应和垫球稳定性。'},
+{id:162,tags:['防守'],tagType:'defense',question:'防守中遇到球速极快的重扣时，手臂应？',options:['手臂用力向前挥出来发力控制球','手臂保持稳定，利用球的力量反弹，不必大幅度发力','手臂放松不动要到位不失误','手臂收回身体的发力更充分'],answer:1,explain:'遇重扣时手臂保持稳定，利用球的力量反弹，不必大幅发力。'},
+{id:163,tags:['防守'],tagType:'defense',question:'防反串联中，防守队员垫球后应做什么？',options:['看球是否过网保持身体姿势','快速调整位置，准备进攻或再次防守','坐下休息的发力更充分','鼓掌加油触球瞬间发力'],answer:1,explain:'防反串联中防守队员垫球后应快速调整位置，准备进攻或再次防守。'},
+{id:164,tags:['防守'],tagType:'defense',question:'防守时，脚应该怎么动？',options:['脚跟固定不动要到位不失误','用碎步保持微调，使身体始终处于准备状态','随意移动触球瞬间发力','只用大跨步控制方向稳定'],answer:1,explain:'防守时脚用碎步保持微调，使身体始终处于最佳准备状态。'},
+{id:165,tags:['防守'],tagType:'defense',question:'防对方处理球时，防守队员应如何站位？',options:['全部退到底线的发力更充分','所有队员回归合理防守位置，注意保护前排空缺','集中在网前控制方向稳定','集中在后排准备姿势站位'],answer:1,explain:'对方处理球时防守队员应回归合理防守位置，全面覆盖场地。'},
+{id:166,tags:['防守'],tagType:'defense',question:'防守时，手臂不应该放在什么位置？',options:['手臂前伸','手臂上举（过高）','手臂自然放置','手臂微屈前伸'],answer:1,explain:'防守时手臂上举过高是错误姿势，会降低反应速度和对低球的覆盖能力。'},
+{id:167,tags:['防守'],tagType:'defense',question:'连续防守训练中"防守串联"指的是？',options:['一次防守后结束','防守起球后快速调整位置准备下一次防守的连续性训练','连续扣球','连续传球'],answer:1,explain:'防守串联指防起球后快速调整位置准备下一次防守的连续性训练，模拟比赛多回合防反。'},
+{id:168,tags:['防守'],tagType:'defense',question:'对方轻拍（吊球）时，正确的判断信号是？',options:['扣球手挥臂速度快','扣球手挥臂速度减慢手型由扣变为托','扣球手大喊一声','球网晃动不少'],answer:1,explain:'对方轻吊时扣球手挥臂速度减慢、手型由扣变托，这是判读吊球的关键信号。'},
+{id:169,tags:['防守'],tagType:'defense',question:'"边跟进"防守阵型中，5号位队员的防守区域侧重？',options:['前排移动中保持稳定','左后区域，保护直线扣球和斜线扣球','网前技术动作要领','右后区域来发力控制球'],answer:1,explain:'边跟进阵型中5号位队员负责左后区域防守，保护直线和斜线扣球。'},
+{id:170,tags:['防守'],tagType:'defense',question:'防守时对来球的第一判断依据是什么？',options:['扣球者的助跑方向的击球点位置','扣球者的身体朝向和手臂挥动方向','球过网后的落点来发力控制球','队友的喊声保持身体姿势'],answer:1,explain:'防守预判主要根据扣球者的身体朝向和手臂挥动方向判断扣球线路。'},
+{id:171,tags:['步法'],tagType:'footwork',question:'排球中最基本的移动步法是？',options:['跑步','并步','交叉步','滑步'],answer:1,explain:'并步是排球中最基本的移动步法，适用于短距离移动，保持身体朝向不变。'},
+{id:172,tags:['步法'],tagType:'footwork',question:'横向长距离移动时，最佳步法是？',options:['并步多次移动过去','交叉步侧跨步一步覆盖距离大效率高','跑步冲刺过去','单脚跳过去'],answer:1,explain:'横向长距离移动时交叉步是最佳选择，一步覆盖距离大、效率高。'},
+{id:173,tags:['步法'],tagType:'footwork',question:'交叉步移动时，哪只脚先动？',options:['向哪侧移动，哪侧的脚先侧跨一步，另一脚交叉跟上','双脚同时起跳要到位不失误','前脚先动的发力更充分','后脚先动触球瞬间发力'],answer:0,explain:'交叉步向哪侧移动哪侧脚先侧跨一步，另一脚从后方交叉跟上。'},
+{id:174,tags:['步法'],tagType:'footwork',question:'排球移动中，最后一步通常是什么步？',options:['小步要到位不失','跨步（制动步）','跑步触球瞬间发','跳步控制方向稳'],answer:1,explain:'移动最后一步通常是跨步（制动步），用于刹车制动并进入准备击球姿势。'},
+{id:175,tags:['步法'],tagType:'footwork',question:'前冲救球时，最后一步应采用什么步法？',options:['并步','大跨步或弓步','交叉步','跑步冲刺'],answer:1,explain:'前冲救球最后一步用大跨步或弓步，以最大范围伸展身体触球。'},
+{id:176,tags:['步法'],tagType:'footwork',question:'后退移动防守时，应使用什么步法？',options:['转身跑过去','后退交叉步或碎步后退保持身体面向来球','直接向后跳','侧身跑过去'],answer:1,explain:'后退防守用后退交叉步或碎步后退，保持身体面向来球方向。'},
+{id:177,tags:['步法'],tagType:'footwork',question:'排球步法训练中"绳梯训练"的主要目的是？',options:['增加力量控制方向稳定','提高脚步敏捷性和频率','提高弹跳移动中保持稳','提高耐力的击球点位置'],answer:1,explain:'绳梯训练提高脚步敏捷性和频率，是排球步法训练的重要方法。'},
+{id:178,tags:['步法'],tagType:'footwork',question:'移动时身体重心应保持在什么水平？',options:['上下起伏幅度大','保持相对稳定的低重心避免上下起伏过大','重心越高越好','重心越低越好'],answer:1,explain:'移动时保持相对稳定的低重心，避免身体上下起伏过大，影响移动效率。'},
+{id:179,tags:['步法'],tagType:'footwork',question:'从后排移动到网前拦网时，应采用什么步法组合？',options:['一直用并步移动','先交叉步快速移动最后并步调整起跳','一直跑步过去','一直后退走'],answer:1,explain:'后排到网前通常先交叉步快速移动，接近网前时用并步调整起跳。'},
+{id:180,tags:['步法'],tagType:'footwork',question:'移动中身体重心的位置应在？',options:['脚跟','前脚掌','全脚掌','脚外侧'],answer:1,explain:'移动中重心在前脚掌，脚后跟微离地面，便于快速启动。'},
+{id:181,tags:['步法'],tagType:'footwork',question:'并步移动时，两脚之间的距离应保持？',options:['两脚分开很大技术动作要领','两脚保持略宽于肩的距离，不交叉不并拢','两脚并拢保持身体姿势','两脚交叉要到位不失误'],answer:1,explain:'并步移动时两脚保持略宽于肩距离，不交叉不并拢，保持稳定。'},
+{id:182,tags:['步法'],tagType:'footwork',question:'"米"字移动训练的主要目的是？',options:['练习扣球来发力控制球','提高向各个方向移动的敏捷性和速度','练习发球要到位不失误','练习传球的发力更充分'],answer:1,explain:'"米"字移动训练提高向各个方向移动的敏捷性和速度。'},
+{id:183,tags:['步法'],tagType:'footwork',question:'快速启动的第一步应该怎么动？',options:['先跳起来再移动','先向目标方向迈一小步重心前移再加速','原地跑几步再移动','先转身再跑'],answer:1,explain:'快速启动第一步先向目标方向迈出一小步，重心前移，然后加速。'},
+{id:184,tags:['步法'],tagType:'footwork',question:'由防守转进攻（防反）时，移动顺序是？',options:['先移动到位再起身','先迅速起身再调整重心移动进攻','站在原地不动','慢慢走回去'],answer:1,explain:'防反时先迅速起身，再调整重心移动至进攻位置。'},
+{id:185,tags:['步法'],tagType:'footwork',question:'碎步（调整步）在排球中的作用是？',options:['没有实际作用的发力更充分','在小范围内微调身体位置，使身体处于最佳击球位置','用于长距离移动控制方向稳定','用于后退准备姿势站位'],answer:1,explain:'碎步在小范围内微调身体位置，使身体处于最佳击球位置。'},
+{id:186,tags:['综合'],tagType:'tech',question:'排球技术中"球感"训练的核心目的是？',options:['增加力量触球瞬间发力','培养对球的弹性、旋转、轨迹的控制能力','提高速度准备姿势站位','提高弹跳移动中保持稳定'],answer:1,explain:'球感训练培养对球的弹性、旋转、轨迹的精细控制能力。'},
+{id:187,tags:['综合'],tagType:'tech',question:'准备姿势时，身体重心应放在？',options:['后脚跟控制方向稳','前脚掌，膝盖微屈','全脚掌移动中保持','脚外侧的击球点位'],answer:1,explain:'准备姿势重心在前脚掌，膝盖微屈，上体稍前倾，随时准备移动。'},
+{id:188,tags:['综合'],tagType:'tech',question:'技术训练中"由易到难"原则指的是？',options:['先练最难的技术再练简单的准备姿势站位','从分解动作到完整动作，从慢速到快速，从无网到有网','只练简单的的击球点位置','只练难的技术动作要领'],answer:1,explain:'由易到难指从分解到完整、从慢速到快速、从无网到有网循序渐进。'},
+{id:189,tags:['综合'],tagType:'tech',question:'排球技术训练中"纠正错误动作"的最佳时机是？',options:['比赛时移动中保持稳定','错误动作形成初期立即纠正，避免形成错误动力定型','训练结束后技术动作要领','无所谓时机来发力控制球'],answer:1,explain:'错误动作应在初现时立即纠正，避免形成错误的动力定型。'},
+{id:190,tags:['综合'],tagType:'tech',question:'训练中"分解练习法"适用于什么情况？',options:['所有技术的击球点位置','复杂技术的初学阶段，将技术分解为若干环节分别练习','简单技术来发力控制球','比赛时保持身体姿势'],answer:1,explain:'分解练习法适用于复杂技术的初学阶段，将技术分解为若干环节分别练习。'},
+{id:191,tags:['综合'],tagType:'tech',question:'训练中"完整练习法"的优点是什么？',options:['容易学技术动作要领','保持技术的连贯性和完整性，接近比赛实际','不需要教练保持身体姿势','不费体力要到位不失误'],answer:1,explain:'完整练习法保持技术的连贯性和完整性，使训练更接近比赛实际。'},
+{id:192,tags:['综合'],tagType:'tech',question:'技术训练中"量变到质变"的含义是？',options:['不练也能进步来发力控制球','通过大量重复的正确练习，使技术从有意识控制变为自动化','随便练练就行要到位不失误','一练就会的发力更充分'],answer:1,explain:'通过大量重复的正确练习使技术从有意识控制变为自动化——量变积累到质变。'},
+{id:193,tags:['综合'],tagType:'tech',question:'排球训练中，技术动作的动力定型需要通过什么建立？',options:['比赛保持身体姿势','大量正确的重复练习','理论学习的发力更充','观看比赛触球瞬间发'],answer:1,explain:'技术动作的动力定型通过大量正确的重复练习建立。'},
+{id:194,tags:['综合'],tagType:'tech',question:'技术训练中"反馈"的作用是？',options:['没有作用要到位不失误','让队员知道动作是否正确，及时调整改正','让队员更累触球瞬间发力','浪费时间控制方向稳定'],answer:1,explain:'训练中及时反馈让队员知道动作是否正确，及时调整改正错误。'},
+{id:195,tags:['综合'],tagType:'tech',question:'技术训练前的准备活动应主要围绕什么内容？',options:['跑步耐力的发力更充分','动态拉伸和相关技术动作的预热','静态拉伸控制方向稳定','力量训练准备姿势站位'],answer:1,explain:'准备活动应包含动态拉伸和当天技术动作的预热，使身体适应训练内容。'},
+{id:196,tags:['综合'],tagType:'tech',question:'训练课后放松拉伸的主要作用是？',options:['浪费时间触球瞬间发力','促进恢复、减少肌肉酸痛、保持柔韧性','练柔韧性准备姿势站位','增加力量移动中保持稳定'],answer:1,explain:'课后放松拉伸促进身体恢复、减少肌肉酸痛、保持关节柔韧性。'},
+{id:197,tags:['综合'],tagType:'tech',question:'技术训练中"对抗训练"的最佳时机是？',options:['每次训练都打对抗控制方向稳定','在基础技术巩固后、有明显进步时引入对抗训练','从来不练对抗移动中保持稳定','只在比赛时打的击球点位置'],answer:1,explain:'对抗训练应在基础技术巩固后引入，过早对抗会导致动作变形。'},
+{id:198,tags:['综合'],tagType:'tech',question:'提高技术训练效果的最关键因素是？',options:['训练时间越长越好准备姿势','训练质量和注意力集中程度','训练环境的击球点位置','训练人数技术动作要领'],answer:1,explain:'训练质量（每一次正确重复）和注意力集中程度是提高效果的关键。'},
+{id:199,tags:['综合'],tagType:'tech',question:'技术训练计划的制定应优先考虑什么？',options:['教练的偏好移动中保持稳定','根据队员的实际技术水平和薄弱环节制定','训练器材技术动作要领','训练时间来发力控制球'],answer:1,explain:'训练计划应根据队员的实际技术水平和薄弱环节制定，针对性训练效果更好。'},
+{id:200,tags:['综合'],tagType:'tech',question:'技术训练中"训练日记"的作用是？',options:['浪费时间的击球点位置','记录训练内容、问题和进步，便于追踪和分析训练效果','给教练看的来发力控制球','应付检查保持身体姿势'],answer:1,explain:'训练日记记录训练内容、问题和进步，便于追踪和分析训练效果。'},
+{id:201,tags:['垫球'],tagType:'bump',question:'垫球时手臂出现"屈肘"动作会导致什么后果？',options:['垫球更准技术动作要领','击球面不稳定，球路偏差大','球垫得更高保持身体姿势','没有影响要到位不失误'],answer:1,explain:'屈肘会使前臂形成的平面不稳定，导致垫球方向难以控制。'},
+{id:202,tags:['垫球'],tagType:'bump',question:'一传时面对大力跳发球，垫球动作应如何？',options:['主动向前迎球发力来发力控制球','手臂保持稳定，含胸收腹缓冲，利用球的力量反弹','大幅度挥动手臂要到位不失误','跳起来垫的发力更充分'],answer:1,explain:'面对大力跳发球应含胸收腹缓冲，手臂保持稳定，利用球的力量反弹，不可主动发力。'},
+{id:203,tags:['垫球'],tagType:'bump',question:'垫球时双腿蹬地发力的正确时机是？',options:['触球前先蹬地保持身体姿势','触球瞬间蹬地伸膝，全身协调发力','触球后再蹬地的发力更充分','不需要蹬地触球瞬间发力'],answer:1,explain:'垫球应在触球瞬间蹬地伸膝，全身协调发力，将力量传递到手臂。'},
+{id:204,tags:['垫球'],tagType:'bump',question:'跑动中垫球时，最后一步应有什么要求？',options:['越小越好要到位不失误','跨大步制动降低重心，保持身体稳定','跳起来垫触球瞬间发力','单脚垫球控制方向稳定'],answer:1,explain:'跑动垫球最后一步应跨大步制动，降低重心保持身体稳定再垫球。'},
+{id:205,tags:['垫球'],tagType:'bump',question:'接侧旋球时，垫球方向应如何调整？',options:['直接向前垫的发力更充分','预判旋转方向，手臂稍偏向旋转反方向控制','不用管旋转控制方向稳定','用力拍球准备姿势站位'],answer:1,explain:'接侧旋球时垫球面应稍偏向旋转反方向，以抵消旋转对出球方向的影响。'},
+{id:206,tags:['垫球'],tagType:'bump',question:'垫球时颈部应保持什么状态？',options:['低头看地板触球瞬间发力','保持自然抬起，注视来球','转头看队友准备姿势站位','仰头看天花板移动中保持'],answer:1,explain:'垫球时颈部自然抬起，眼睛注视来球，便于判断球路和落点。'},
+{id:207,tags:['垫球'],tagType:'bump',question:'"送球"动作中，垫球后手臂应继续向什么方向跟随？',options:['手臂垫球后立即收回控制方向稳定','手臂向目标方向自然跟随送出，增加控制力','手臂后摆移动中保持稳定','手臂上举的击球点位置'],answer:1,explain:'垫球后手臂向目标方向自然跟随送出，可增加对出球方向的控制力。'},
+{id:208,tags:['垫球'],tagType:'bump',question:'背向垫球时，身体的发力顺序是？',options:['只靠手臂向后摆准备姿势站位','蹬地挺髋展腹抬臂，向后上方发力','转身再垫的击球点位置','跳起后垫技术动作要领'],answer:1,explain:'背向垫球需蹬地挺髋展腹抬臂，向后上方发力，利用腰背力量辅助。'},
+{id:209,tags:['传球'],tagType:'set',question:'传球时两手之间的距离应约为？',options:['两手紧贴移动中保持稳定','约一个球的宽度，呈半球形包住球','两手间距10cm技术动作要领','两手间距20cm以上来发力控制'],answer:1,explain:'传球时两手间距约一个球的宽度，呈半球形包住球，过大或过小都会影响控制。'},
+{id:210,tags:['传球'],tagType:'set',question:'二传手在组织快攻时，触球时间应如何控制？',options:['触球时间越长越好的击球点位置','触球时间短促，利用手指弹性快速出手','与传高球一样来发力控制球','触球后停顿再出手保持身体姿势'],answer:1,explain:'快攻时触球时间应短促，利用手指弹性快速出手，不能有持球动作。'},
+{id:211,tags:['传球'],tagType:'set',question:'传球时出现"持球"犯规的主要原因是？',options:['手指力量不够技术动作要领','触球时间过长，球在手中停留','传球太快保持身体姿势','跳得太高要到位不失误'],answer:1,explain:'持球犯规因触球时间过长，球在手中明显停留，裁判会判犯规。'},
+{id:212,tags:['传球'],tagType:'set',question:'二传手进行"跳传"时，空中的身体姿态应如何？',options:['身体后仰来发力控制球','空中保持稳定，利用腰腹力量控制身体平衡，手臂在空中完成传球','身体前倾要到位不失误','身体左右摇摆的发力更充分'],answer:1,explain:'跳传时空中保持稳定，利用腰腹力量控制平衡，手臂在空中完成传球动作。'},
+{id:213,tags:['传球'],tagType:'set',question:'传低球时，二传手应如何调整手型？',options:['手型不变保持身体姿势','降低重心，手指朝下，从低处向上发力传球','站直身体的发力更充分','单手下手传球触球瞬间发力'],answer:1,explain:'传低球时应降低重心，手指朝下从低处向上发力传球，保持正确手型。'},
+{id:214,tags:['传球'],tagType:'set',question:'二传手给副攻传近体快球时，出球高度约？',options:['高出网口2-3米要到位','高出网口30-50cm','贴网而过触球瞬间发力','低于网口控制方向稳定'],answer:1,explain:'近体快球出球高度约高出网口30-50cm，副攻起跳后立即扣球。'},
+{id:215,tags:['传球'],tagType:'set',question:'传球时手腕僵硬会导致什么问题？',options:['传球更准的发力更充分','球传出去没有缓冲，控制力差，容易弹飞','球传得更远控制方向稳定','没有影响准备姿势站位'],answer:1,explain:'手腕僵硬导致缺乏缓冲，球碰到手就被弹飞，无法有效控制传球方向和力度。'},
+{id:216,tags:['传球'],tagType:'set',question:'"背传"技术中，身体重心的移动方向是？',options:['重心前倾触球瞬间发力','重心先稍后移，然后蹬地展腹向后上方发力','重心左移准备姿势站位','重心右移移动中保持稳定'],answer:1,explain:'背传时重心先稍后移，然后蹬地展腹向后上方发力，利用腰背力量。'},
+{id:217,tags:['传球'],tagType:'set',question:'二传手调整"乱球"时，最优先的原则是？',options:['一定要传到位控制方向稳定','先确保把球处理过网，不失误的前提下再追求传球质量','大力传过网移动中保持稳定','放弃追球的击球点位置'],answer:1,explain:'处理乱球时先确保不失误，在能稳定触球的前提下再追求传球质量。'},
+{id:218,tags:['传球'],tagType:'set',question:'二传手在比赛中"假动作"传球的目的是？',options:['为了好看准备姿势站位','迷惑对方拦网，改变传球方向使对方难以判断进攻点','拖延时间的击球点位置','展示技术技术动作要领'],answer:1,explain:'假动作传球是为了迷惑对方拦网，使对方难以判断真实进攻点。'},
+{id:219,tags:['扣球'],tagType:'spike',question:'扣球时"打手出界"技术要求球触及拦网手后的飞行方向是？',options:['落在对方场地内','向上飞起后出界','向侧面飞出','向后飞回本方场地'],answer:1,explain:'打手出界要求球触及拦网手后向上向外飞出界外，需要击球后下部。'},
+{id:220,tags:['扣球'],tagType:'spike',question:'扣球"压腕"动作的主要作用是？',options:['增加球速的击球点位置','给球施加旋转，使球加速下落入界','控制方向来发力控制球','保护手腕保持身体姿势'],answer:1,explain:'压腕给球施加向下旋转，使球在过网后快速下坠，提高入界率。'},
+{id:221,tags:['扣球'],tagType:'spike',question:'2号位扣球与4号位扣球在助跑方向上的主要区别是？',options:['没有区别技术动作要领','4号位从左向右切入，2号位从右向左切入（右手球员）','方向相反即可保持身体姿势','2号位垂直于球网要到位不失误'],answer:1,explain:'右手球员4号位从球场左侧向右切入，2号位从右侧向左切入，起跳后转体方向不同。'},
+{id:222,tags:['扣球'],tagType:'spike',question:'扣球时过早打开身体（转体过早）会导致？',options:['扣球更有力量来发力控制球','力量分散，球易扣出界外或失去方向控制','击球点更高要到位不失误','减少失误的发力更充分'],answer:1,explain:'转体过早起跳后身体已面向球网，无法利用转体力量，球易出界。'},
+{id:223,tags:['扣球'],tagType:'spike',question:'扣球训练中"原地扣球"练习主要解决什么问题？',options:['提高弹跳保持身体姿势','纠正空中击球动作和击球点','提高力量的发力更充分','提高速度触球瞬间发力'],answer:1,explain:'原地扣球练习让队员专注于空中击球动作和击球点的控制，排除助跑干扰。'},
+{id:224,tags:['扣球'],tagType:'spike',question:'后排进攻扣球与前排扣球的最大区别是什么？',options:['没有区别要到位不失误','起跳位置在3米线后，击球距离更远，需要更强腰腹力量','后排不需要助跑触球瞬间发力','后排扣球更简单控制方向稳定'],answer:1,explain:'后排进攻起跳在3米线后，球在空中飞行距离更长，需要更强的腰腹收腹力量。'},
+{id:225,tags:['扣球'],tagType:'spike',question:'扣球时球的旋转方向应该是？',options:['上旋（球向前旋转）','下旋（球向后旋转）','侧旋控制方向稳定','不旋转准备姿势站位'],answer:0,explain:'扣球正确的旋转是上旋（球顶部向前旋转），使球加速下坠。'},
+{id:226,tags:['扣球'],tagType:'spike',question:'扣球时面对一次不到位的传球，最合理的处理方式是？',options:['不跳了触球瞬间发力','调整步法和起跳时机，争取在最高点处理，可改为轻打或吊球','直接推过网准备姿势站位','用力扣杀移动中保持稳定'],answer:1,explain:'面对不到位传球应调整步法和起跳时机，在最高点根据情况选择轻打或吊球。'},
+{id:227,tags:['扣球'],tagType:'spike',question:'扣球"直臂扣球"和"屈臂扣球"哪种更适合发力？',options:['直臂扣球控制方向稳定','屈臂扣球——肘部领先，前臂加速甩出形成鞭打','两者一样移动中保持稳定','都不好的击球点位置'],answer:1,explain:'屈臂扣球利用肘部领先然后前臂加速甩出的鞭打动作，比直臂扣球力量更大。'},
+{id:228,tags:['扣球'],tagType:'spike',question:'扣球空中保持"反弓"姿势的作用是？',options:['防止触网准备姿势站位','利用胸腹拉伸后的弹性反作用力增加扣球力量','保持平衡的击球点位置','减慢下落速度技术动作要领'],answer:1,explain:'空中"反弓"（挺胸展腹）利用胸腹肌群的弹性反作用力增加扣球力量。'},
+{id:229,tags:['发球'],tagType:'serve',question:'跳飘球与站立飘球相比，最大的优势是？',options:['更省力移动中保持稳定','击球点更高，持球时间更短，球过网弧线更低','更容易控制技术动作要领','不需要抛球来发力控制球'],answer:1,explain:'跳飘球通过起跳获得更高击球点，过网弧线更低，更具攻击性。'},
+{id:230,tags:['发球'],tagType:'serve',question:'发球时抛球高度不稳定会导致什么问题？',options:['没有影响的击球点位置','击球点不固定，难以形成稳定的发球动作，失误率增加','球速更快来发力控制球','对手更难接保持身体姿势'],answer:1,explain:'抛球高度不稳定导致每次击球点不同，无法形成稳定的发球动作。'},
+{id:231,tags:['发球'],tagType:'serve',question:'大力跳发球与扣球在击球部位上的区别是？',options:['完全相同技术动作要领','跳发球击球后上部使球向前下方飞行，扣球击球后下部使球过网下坠','跳发击球下部保持身体姿势','扣球击球上部要到位不失误'],answer:1,explain:'跳发球击球后上部使球向前下方快速过网，扣球则击球后下部使球过网后下坠。'},
+{id:232,tags:['发球'],tagType:'serve',question:'发球训练中"成功率"与"攻击性"的关系是？',options:['不需要成功率来发力控制球','先保证成功率（>90%），再逐步增加攻击性','只追求攻击性要到位不失误','只追求成功率的发力更充分'],answer:1,explain:'发球训练应先保证成功率，在稳定基础上逐步增加攻击性，否则失误等于送分。'},
+{id:233,tags:['发球'],tagType:'serve',question:'发球时击球臂挥臂速度与球速的关系是？',options:['没有关系保持身体姿势','挥臂速度越快，传递给球的速度越大，但需以控制为前提','挥臂越慢越好的发力更充分','与挥臂速度无关触球瞬间发力'],answer:1,explain:'挥臂速度与球速正相关，但必须在稳定控制的前提下提高挥臂速度。'},
+{id:234,tags:['发球'],tagType:'serve',question:'跳发球落地后应如何保护自己？',options:['落地后站在原地要到位不失误','落地时屈膝缓冲，迅速退场不干扰比赛','落地后躺下触球瞬间发力','跳发不需要注意落地控制方向稳定'],answer:1,explain:'跳发球落地应屈膝缓冲，落地后迅速退出场外，避免干扰比赛。'},
+{id:235,tags:['发球'],tagType:'serve',question:'发球时身体扭转的时机应在？',options:['抛球前就转好的发力更充分','抛球后挥臂击球时利用躯干旋转力量发力','触球后再转控制方向稳定','不需要扭转准备姿势站位'],answer:1,explain:'发球时在抛球后挥臂击球过程中利用躯干旋转发力，增加发球力量。'},
+{id:236,tags:['发球'],tagType:'serve',question:'发飘球时击球后手臂应做什么动作？',options:['手臂继续跟随摆动触球瞬间发力','击球后手臂急停，不跟随（短促发力）','手臂向左摆动准备姿势站位','手臂上举移动中保持稳定'],answer:1,explain:'发飘球击球后手臂急停不跟随，形成短促发力，使球不旋转。'},
+{id:237,tags:['发球'],tagType:'serve',question:'"跳飘球"起跳高度与"跳发球"的区别是？',options:['一样高控制方向稳定','跳飘球起跳高度较低，主要向上飘送；跳发球要全力起跳扣杀式发球','跳飘球更高移动中保持稳定','都不需要起跳的击球点位置'],answer:1,explain:'跳飘球起跳较低主要增加击球高度，跳发球则全力起跳扣杀式发球。'},
+{id:238,tags:['发球'],tagType:'serve',question:'发球时间限制（8秒规则）的要求是什么？',options:['发球没有时间限制准备姿势站位','裁判鸣哨后8秒内必须将球发出','10秒内的击球点位置','5秒内技术动作要领'],answer:1,explain:'根据规则，裁判鸣哨后发球队员须在8秒内将球发出。'},
+{id:239,tags:['拦网'],tagType:'block',question:'拦网起跳前双脚应如何准备？',options:['双脚并拢移动中保持稳定','双脚分开与肩同宽，膝盖微屈准备起跳','双脚交叉技术动作要领','单脚支撑来发力控制球'],answer:1,explain:'拦网准备时双脚分开与肩同宽，膝盖微屈，随时准备向两侧移动起跳。'},
+{id:240,tags:['拦网'],tagType:'block',question:'拦网时手掌和手指过于放松会导致什么？',options:['更容易拦到球的击球点位置','球碰到手后易被击穿或反弹失控','手不容易受伤来发力控制球','拦网高度更高保持身体姿势'],answer:1,explain:'手指手掌过于放松时球碰到手会被击穿或失控，应保持适当紧张度。'},
+{id:241,tags:['拦网'],tagType:'block',question:'"拦网手型"训练中"盖帽"动作的技术关键是？',options:['手向两侧伸展技术动作要领','双手罩住球上方，手腕下压将球拦回对方场地','手握拳击球保持身体姿势','手不过网要到位不失误'],answer:1,explain:'盖帽式拦网双手罩住球上方，手腕下压将球直接拦回对方场地。'},
+{id:242,tags:['拦网'],tagType:'block',question:'拦网训练中"判断训练"的最佳辅助手段是？',options:['闭眼凭感觉拦来发力控制球','观察扣球者躯干朝向和挥臂轨迹来预判扣球线路','只看球不看人要到位不失误','听声音判断的发力更充分'],answer:1,explain:'判断扣球线路最有效的方法：看扣球者躯干朝向和挥臂轨迹。'},
+{id:243,tags:['拦网'],tagType:'block',question:'连续拦网训练主要提高什么能力？',options:['力量保持身体姿势','连续起跳能力和移动步法衔接能力','耐力的发力更充分','速度触球瞬间发力'],answer:1,explain:'连续拦网训练提高连续起跳能力和移动步法衔接能力，适应比赛中多点进攻。'},
+{id:244,tags:['拦网'],tagType:'block',question:'拦网时伸臂过网的程度与什么因素有关？',options:['与身高有关要到位不失误','与起跳时机和起跳点选择有关——起跳时机准才能有效伸臂又避触网','与力量有关触球瞬间发力','与体重有关控制方向稳定'],answer:1,explain:'伸臂过网程度取决于起跳时机和起跳点，时机准才能有效伸臂又避免触网。'},
+{id:245,tags:['拦网'],tagType:'block',question:'拦对方快球时拦网手型应如何调整？',options:['手型不变的发力更充分','由于快球速度极快，手型要预判早伸手，覆盖对方扣球线路','手型放松控制方向稳定','手握拳准备姿势站位'],answer:1,explain:'拦快球因球速极快，需预判早伸手，提前覆盖扣球线路。'},
+{id:246,tags:['防守'],tagType:'defense',question:'防守训练中"防吊球"练习的关键是？',options:['站在原地不动触球瞬间发力','判断扣球手型变化，看到吊球信号立即前冲','后退防守准备姿势站位','转身背对移动中保持稳定'],answer:1,explain:'防吊球关键在于判断扣球手型变化——由扣变托时立即前冲。'},
+{id:247,tags:['防守'],tagType:'defense',question:'防守时双脚持续"碎步"调整的作用是？',options:['浪费体力控制方向稳定','保持身体微动，随时向任何方向快速启动','好看移动中保持稳定','干扰对手的击球点位置'],answer:1,explain:'碎步（脚步微调）让身体保持动态准备状态，随时向任何方向快速启动。'},
+{id:248,tags:['防守'],tagType:'defense',question:'防对方处理球时，防守队员应如何站位？',options:['全部退回底线准备姿势站位','各归各位回到合理防守位置，覆盖场地所有区域','全部上前的击球点位置','集中在中间技术动作要领'],answer:1,explain:'对方处理球时防守队员应回到合理防守位置，全面覆盖场地。'},
+{id:249,tags:['防守'],tagType:'defense',question:'防反中由防守转为进攻时，移动的逻辑顺序是？',options:['先看球再移动移动中保持稳定','防起球后先迅速起身→寻找球的位置→移动准备进攻','直接跑去进攻技术动作要领','等球落网来发力控制球'],answer:1,explain:'防反转换逻辑：防起球→迅速起身→寻找球位→移动准备进攻。'},
+{id:250,tags:['防守'],tagType:'defense',question:'防守"卡位"与"追球"的区别是？',options:['没有区别的击球点位置','卡位是根据预判提前移动到扣球线路上；追球是球出手后才跟着跑','卡位更简单来发力控制球','追球更好保持身体姿势'],answer:1,explain:'卡位是预判性选位，追球是反应性追球。好的防守70%靠卡位，30%靠追球。'},
+{id:251,tags:['防守'],tagType:'defense',question:'防扣球时膝部超过脚尖会导致什么风险？',options:['垫球更准技术动作要领','重心前倾失衡，易向前扑倒','膝盖更稳定保持身体姿势','力量更大要到位不失误'],answer:1,explain:'膝部超过脚尖导致重心前倾，防守时容易被晃倒或向前扑倒。'},
+{id:252,tags:['防守'],tagType:'defense',question:'防守中"取位"决策的主要依据是？',options:['跟着球跑来发力控制球','根据对方扣球线路、本方拦网布置、自己防守区域综合考虑','站中间不动要到位不失误','随便站的发力更充分'],answer:1,explain:'取位需综合考虑扣球线路、拦网布置和自身防守区域，三者缺一不可。'},
+{id:253,tags:['防守'],tagType:'defense',question:'连续防守训练中最重要的是培养什么意识？',options:['一次防起就够了保持身体姿势','球防起后马上调整位置准备下一次防守，形成串联意识','不用管第二次的发力更充分','力量最重要触球瞬间发力'],answer:1,explain:'连续防守训练核心是培养串联意识——每次防起后立即调整位置准备下一球。'},
+{id:254,tags:['判断'],tagType:'tf',question:'垫球时，手臂弯曲比手臂伸直更容易控制球的方向。',options:['正确','错误'],answer:1,explain:'垫球时应两臂伸直夹紧，前臂内侧形成稳定的平面。手臂弯曲会导致击球面不稳定。'},
+{id:255,tags:['判断'],tagType:'tf',question:'发飘球时，手腕固定使球不旋转才能产生飘忽轨迹。',options:['正确','错误'],answer:0,explain:'发飘球的技术核心正是手腕固定、手臂短促发力，使球不旋转，空气阻力不均导致飘忽。'},
+{id:256,tags:['判断'],tagType:'tf',question:'扣球时，击球点越靠后越容易打出发力充分的扣球。',options:['正确','错误'],answer:1,explain:'扣球的击球点应在身体前上方、手臂充分伸展的最高点，而非靠后位置。'},
+{id:257,tags:['判断'],tagType:'tf',question:'拦网时，起跳越早拦网效果越好。',options:['正确','错误'],answer:1,explain:'拦网起跳时机应在扣球者起跳后即将击球时。起跳过早则下落时球才过网，过晚则来不及。'},
+{id:258,tags:['判断'],tagType:'tf',question:'二传手在传球前应优先观察攻手位置，而不是先看来球。',options:['正确','错误'],answer:1,explain:'二传应先看来球判断球路，再观察攻手位置，触球瞬间做出传球决定。顺序不能颠倒。'},
+{id:259,tags:['判断'],tagType:'tf',question:'防守时身体重心越低越好，越低越容易快速移动。',options:['正确','错误'],answer:1,explain:'重心过低会导致移动启动变慢。正确的防守重心是膝盖微屈、重心在前脚掌，既能稳定又便于启动。'},
+{id:260,tags:['判断'],tagType:'tf',question:'接大力扣球时，手臂应主动向前发力迎球才能垫到位。',options:['正确','错误'],answer:1,explain:'接大力扣球时手臂应保持稳定，利用来球力量反弹，适当后引缓冲。主动发力反而容易失误。'},
+{id:261,tags:['判断'],tagType:'tf',question:'排球场上的"自由人"可以扣球和拦网。',options:['正确','错误'],answer:1,explain:'自由人不能扣球、不能拦网。根据最新规则自由人可以发球，但扣球和拦网仍被禁止。'},
+{id:262,tags:['判断'],tagType:'tf',question:'比赛中球触及标志杆后落入对方场地算界内球。',options:['正确','错误'],answer:1,explain:'球必须从两根标志杆之间通过进入对方场区。触及标志杆即视为出界。'},
+{id:263,tags:['判断'],tagType:'tf',question:'训练前不做热身直接进行力量训练可以节省时间。',options:['正确','错误'],answer:1,explain:'训练前必须热身（动态拉伸+技术预热），否则肌肉关节未准备好就进行力量训练。'},
+{id:264,tags:['判断'],tagType:'tf',question:'垫球时手臂弯曲比伸直更容易控制球的方向和落点。',options:['正确','错误'],answer:1,explain:'垫球时必须两臂伸直夹紧，手臂弯曲会导致击球面不稳定，方向难以控制。'},
+{id:265,tags:['判断'],tagType:'tf',question:'发飘球技术核心是手腕固定不发力，使球不旋转产生飘忽轨迹。',options:['正确','错误'],answer:0,explain:'发飘球正是手腕固定、手臂短促发力，使球不旋转，空气阻力不均产生飘忽。'},
+{id:266,tags:['判断'],tagType:'tf',question:'扣球的击球点越靠后越容易发力打出有力的扣球。',options:['正确','错误'],answer:1,explain:'扣球击球点应在身体前上方最高点。击球点靠后会损失力量和线路选择。'},
+{id:267,tags:['判断'],tagType:'tf',question:'拦网起跳越早拦网效果越好可以封堵更多线路。',options:['正确','错误'],answer:1,explain:'拦网应在扣球者起跳后即将击球时起跳。过早则下落时球才过网。'},
+{id:268,tags:['判断'],tagType:'tf',question:'二传手传球前应先观察攻手位置而不是先看来球方向。',options:['正确','错误'],answer:1,explain:'二传应先看来球判断球路再观察攻手位置，顺序颠倒会导致传不准。'},
+{id:269,tags:['判断'],tagType:'tf',question:'防守时身体重心越低越好越低越容易快速向两侧移动。',options:['正确','错误'],answer:1,explain:'重心过低会导致启动变慢。正确防守重心是膝盖微屈重心在前脚掌。'},
+{id:270,tags:['判断'],tagType:'tf',question:'接大力扣球时手臂应主动向前发力迎球才能把球垫到位。',options:['正确','错误'],answer:1,explain:'接大力扣球时手臂保持稳定利用来球力量反弹。主动发力反而容易失误。'},
+{id:271,tags:['判断'],tagType:'tf',question:'排球比赛中的自由人不能扣球不能拦网但可以发球。',options:['正确','错误'],answer:0,explain:'自由人不能扣球和拦网。根据最新规则自由人可以发一轮球。'},
+{id:272,tags:['判断'],tagType:'tf',question:'比赛中球触及标志杆后落入对方场地应判为界内有效球。',options:['正确','错误'],answer:1,explain:'球必须从两根标志杆之间通过进入对方场区。触及标志杆即视为出界。'},
+{id:273,tags:['判断'],tagType:'tf',question:'扣球时空中反弓挺胸展腹可以增加扣球的力量和速度。',options:['正确','错误'],answer:0,explain:'空中反弓利用胸腹肌群的弹性反作用力增加扣球力量是正确技术。'},
+{id:274,tags:['判断'],tagType:'tf',question:'一传垫球的目标应该是将球垫到二传手附近2到3米范围。',options:['正确','错误'],answer:0,explain:'一传的目标就是将球垫到二传手附近便于组织进攻。这是正确说法。'},
+{id:275,tags:['判断'],tagType:'tf',question:'上手飘球击球后手臂应继续跟随摆动以增加发球力量。',options:['正确','错误'],answer:1,explain:'发飘球击球后手臂应急停不跟随形成短促发力使球不旋转。'},
+{id:276,tags:['判断'],tagType:'tf',question:'跳发球可以利用起跳高度获得更高击球点和更快球速。',options:['正确','错误'],answer:0,explain:'跳发球通过助跑起跳获得更高击球点和前冲力球速更快旋转更强。'},
+{id:277,tags:['判断'],tagType:'tf',question:'双人拦网时两名队员应并拢手型不留缝隙协同移动起跳。',options:['正确','错误'],answer:0,explain:'双人拦网需并拢手型不留缝隙外侧手内倾封堵线路协同移动封网。'},
+{id:278,tags:['判断'],tagType:'tf',question:'背向传球时手腕应前压身体前倾借助腰腹力量送球。',options:['正确','错误'],answer:1,explain:'背传时手腕后仰身体稍后倾借助腰背力量将球向背后传出。'},
+{id:279,tags:['判断'],tagType:'tf',question:'扣球助跑与球网约成45度角便于最后转身面对球网起跳。',options:['正确','错误'],answer:0,explain:'4号位扣球助跑与球网约成45度角便于最后转身面对球网起跳发力。'},
+{id:280,tags:['判断'],tagType:'tf',question:'垫球时两臂夹不紧会导致球速变快对方更难接住球。',options:['正确','错误'],answer:1,explain:'两臂夹不紧导致击球面不稳定垫球方向偏差大而不是球速变快。'},
+{id:281,tags:['判断'],tagType:'tf',question:'发球的8秒规则是指裁判鸣哨后8秒内必须将球发出。',options:['正确','错误'],answer:0,explain:'裁判鸣哨后发球队员须在8秒内将球发出否则判发球延误犯规。'},
+{id:282,tags:['判断'],tagType:'tf',question:'拦网时双手之间的距离越近越好不留任何空隙才有效。',options:['正确','错误'],answer:1,explain:'拦网双手间距约一个球的宽度不超过球的直径。太近反而覆盖面小。'},
+{id:283,tags:['判断'],tagType:'tf',question:'扣球压腕动作可以给球施加旋转使球加速下落入界。',options:['正确','错误'],answer:0,explain:'压腕给球施加向下旋转使球过网后快速下坠提高入界率是正确动作。'},
+{id:284,tags:['判断'],tagType:'tf',question:'训练前不做热身直接进行力量训练可以节省宝贵时间。',options:['正确','错误'],answer:1,explain:'训练前必须热身否则肌肉关节未准备好就进行力量训练容易受伤。'},
+{id:285,tags:['判断'],tagType:'tf',question:'二传手给副攻传近体快球时出球高度约高出网口30到50cm。',options:['正确','错误'],answer:0,explain:'近体快球出球高度约高出网口30到50cm副攻起跳后立即扣球。'},
+{id:286,tags:['判断'],tagType:'tf',question:'后排防守时眼睛应始终注视对方扣球手的动作和球飞行轨迹。',options:['正确','错误'],answer:0,explain:'防守时应注视对方扣球手和球的飞行轨迹预判扣球线路做好取位。'},
+{id:287,tags:['判断'],tagType:'tf',question:'采用心跟进防守阵型时6号位队员应跟进球网中区保护。',options:['正确','错误'],answer:0,explain:'心跟进指6号位队员跟进到三米线附近保护拦网和防守吊球。'},
+{id:288,tags:['判断'],tagType:'tf',question:'扣球落地时膝盖应伸直落地避免膝盖弯曲造成损伤。',options:['正确','错误'],answer:1,explain:'扣球落地应膝盖弯曲缓冲双脚前后分开落地分散冲击力保护膝盖。'},
+{id:289,tags:['判断'],tagType:'tf',question:'训练课后放松拉伸可以促进恢复减少肌肉酸痛保持柔韧性。',options:['正确','错误'],answer:0,explain:'课后放松拉伸确实可以促进身体恢复减少肌肉酸痛保持关节柔韧性。'},
+{id:290,tags:['判断'],tagType:'tf',question:'打手出界技术需击球后下部使球向上飞起触拦网手后出界。',options:['正确','错误'],answer:0,explain:'打手出界击球后下部球向上飞起触及拦网手后向外飞出界外。'},
+
+// ===== 多选题 (291-305) =====
+{id:291,multi:true,multiAnswer:[0,2],tags:['垫球'],tagType:'multi',question:'垫球时提高一传到位率的关键因素有哪些？（多选）',options:['移动到位后身体正对来球','手臂弯曲用上臂发力','两臂夹紧形成稳定平面','用手掌心向上托球'],answer:0,explain:'一传到位率的关键是移动到位+身体正对来球+两臂夹紧形成稳定平面。'},
+{id:292,multi:true,multiAnswer:[0,2],tags:['传球'],tagType:'multi',question:'上手传球时以下哪些描述是正确的？（多选）',options:['手指自然张开呈半球形','用手心托住球再推出','用指腹触球控制方向','用指尖用力弹球'],answer:0,explain:'上手传球应用手指指腹触球，手指自然张开呈半球形包球。'},
+{id:293,multi:true,multiAnswer:[1,3],tags:['扣球'],tagType:'multi',question:'扣球时哪些情况属于常见的错误动作？（多选）',options:['击球点在身体前上方最高点','助跑节奏与球不匹配过早起跳','起跳时双臂向前上方摆动带动身体','空中身体过早打开转体'],answer:0,explain:'过早起跳和过早打开转体是常见错误。击球点在最高点和摆臂带动身体是正确动作。'},
+{id:294,multi:true,multiAnswer:[0,2],tags:['发球'],tagType:'multi',question:'发飘球时正确的技术要点有哪些？（多选）',options:['手腕固定使球不旋转','手臂大幅度跟随摆动','击球后手臂急停短促发力','用手掌根部大力推球'],answer:0,explain:'发飘球核心是手腕固定和击球后手臂急停短促发力，使球不旋转、轨迹飘忽。'},
+{id:295,multi:true,multiAnswer:[1,2],tags:['拦网'],tagType:'multi',question:'双人拦网时正确的配合方式有哪些？（多选）',options:['各拦各的不需要沟通','并拢手型不留缝隙','外侧手内倾封堵直线','中间队员降低手型'],answer:0,explain:'双人拦网需并拢手型不留缝隙，外侧手内倾封堵直线线路。'},
+{id:296,multi:true,multiAnswer:[0,3],tags:['防守'],tagType:'multi',question:'后排防守准备姿势正确的是哪些？（多选）',options:['膝盖深屈上体前倾重心低','身体直立两臂自然下垂','两臂自然前伸准备随时移动','重心在后脚跟便于发力'],answer:0,explain:'防守准备应膝盖深屈、上体前倾、重心低、两臂前伸。直立和后脚跟重心都是错误的。'},
+{id:297,multi:true,multiAnswer:[1,2],tags:['步法'],tagType:'multi',question:'排球横向移动时正确的步法是哪些？（多选）',options:['跑步横向冲刺过去','短距离用并步保持身体朝向','长距离用交叉步效率高','单脚跳跃移动'],answer:0,explain:'短距离用并步保持身体朝向不娈，长距离用交叉步效率高。横向跑步和跳跃都不对。'},
+{id:298,multi:true,multiAnswer:[0,3],tags:['垫球'],tagType:'multi',question:'接大力扣球时垫球技术要点有哪些？（多选）',options:['手臂保持稳定减少主动发力','主动向前迎球加大发力','适当后引缓冲来球力量','用手腕直接挡球'],answer:0,explain:'接大力扣球应手臂保持稳定利用来球力量，适当后引缓冲。'},
+{id:299,multi:true,multiAnswer:[1,2],tags:['传球'],tagType:'multi',question:'二传手给攻手传球时应考虑哪些因素？（多选）',options:['只看来球不看攻手位置','观察攻手位置和跑动路线','判断对方拦网位置和高度','球越高越好不管弧度'],answer:0,explain:'二传应观察攻手位置和对方拦网，综合判断传球策略。'},
+{id:300,multi:true,multiAnswer:[1,3],tags:['扣球'],tagType:'multi',question:'扣球面对双人拦网时的应对策略有哪些？（多选）',options:['永远打直线不变化','选择打手出界技术','观察拦网手空隙扣球','强行扣球不过网'],answer:0,explain:'面对双人拦网应选择打手出界或观察拦网手空隙扣球。'},
+{id:301,multi:true,multiAnswer:[0,2],tags:['发球'],tagType:'multi',question:'提高发球成功率的正确方法有哪些？（多选）',options:['稳定抛球确保击球点准确','发球越用力越好不管落点','先保证过网率再增加攻击性','抛球高度忽高忽低'],answer:0,explain:'提高发球成功率关键是稳定抛球和控制击球点，先保证过网率再增加攻击性。'},
+{id:302,multi:true,multiAnswer:[1,2],tags:['拦网'],tagType:'multi',question:'拦网时判断扣球线路的正确依据有哪些？（多选）',options:['只看球不看扣球人动作','观察扣球者躯干朝向','观察扣球者挥臂轨迹','闭眼凭感觉跳'],answer:0,explain:'判断扣球线路应观察扣球者躯干朝向和挥臂轨迹。'},
+{id:303,multi:true,multiAnswer:[0,2],tags:['防守'],tagType:'multi',question:'防守中预判扣球线路的合理依据有哪些？（多选）',options:['对方扣球手的身体朝向','球的飞行高度','扣球手的挥臂方向和速度','己方队员的喊声'],answer:0,explain:'预判扣球线路应看扣球手身体朝向和挥臂方向速度。'},
+{id:304,multi:true,multiAnswer:[0,3],tags:['步法'],tagType:'multi',question:'排球移动步法的基本原则有哪些？（多选）',options:['保持低重心减少身体起伏','移动越快越好不管重心','最后一步跨步制动稳定身体','启动第一步先迈一小步再加速'],answer:0,explain:'移动时应保持低重心减少起伏，最后一步跨步制动，启动先迈小步加速。'},
+{id:305,multi:true,multiAnswer:[1,2],tags:['综合'],tagType:'multi',question:'以下哪些属于技术训练中"由易到难"原则的体现？（多选）',options:['上来就直接打比赛','从分解动作到完整动作','从无网练习到有网练习','先练最难的技术再练简单的'],answer:0,explain:'由易到难体现在从分解到完整、从无网到有网的渐进过程。'}
+
+// ===== 竞赛规则 (306-370) =====
+// ---- 场地与器材 (Rule 1-3) ----
+{id:306,tags:['规则'],tagType:'rule',question:'标准排球场的尺寸是多少？',options:['16m × 8m','18m × 9m','20m × 10m','15m × 7.5m'],answer:1,explain:'标准排球场为18m×9m的矩形。[规则1.1]'},
+{id:307,tags:['规则'],tagType:'rule',question:'球网的高度，男子和女子分别是多少？',options:['男子2.35m 女子2.15m','男子2.43m 女子2.24m','男子2.50m 女子2.30m','男子2.40m 女子2.20m'],answer:1,explain:'男子网高2.43m，女子网高2.24m。[规则2.1.1]'},
+{id:308,tags:['规则'],tagType:'rule',question:'标志杆的长度和超出球网的高度分别是多少？',options:['长1.50m 超出60cm','长1.80m 超出80cm','长2.00m 超出100cm','长1.60m 超出70cm'],answer:1,explain:'标志杆长1.80m，超出球网上方80cm。[规则2.4]'},
+{id:309,tags:['规则'],tagType:'rule',question:'比赛用球的标准周长和重量是多少？',options:['周长63-65cm 重量240-260g','周长65-67cm 重量260-280g','周长67-69cm 重量280-300g','周长64-66cm 重量250-270g'],answer:1,explain:'球的周长为65-67cm，重量为260-280g。[规则3.1]'},
+{id:310,tags:['规则'],tagType:'rule',question:'球的内压标准是多少？',options:['0.20-0.25 kg/cm²','0.30-0.325 kg/cm²','0.35-0.40 kg/cm²','0.25-0.30 kg/cm²'],answer:1,explain:'球的内压为0.30-0.325 kg/cm²(294.3-318.82 mbar)。[规则3.1]'},
+
+// ---- 参赛队伍 (Rule 4) ----
+{id:311,tags:['规则'],tagType:'rule',question:'一场比赛中每支球队最多可报名多少名队员？',options:['10名','12名','14名','16名'],answer:1,explain:'一场比赛每队最多可报12名队员。FIVB成年赛事最多可报14名。[规则4.1.1]'},
+{id:312,tags:['规则'],tagType:'rule',question:'球员球衣号码的范围是多少？',options:['1-12号','1-18号','1-20号','1-99号'],answer:2,explain:'球员号码为1-20号。[规则4.3.3]'},
+{id:313,tags:['规则'],tagType:'rule',question:'队长球衣上有什么特殊标记？',options:['队长袖标','胸前号码下有一条8×2cm的下划线','不同颜色的球衣','背后有"C"字母'],answer:1,explain:'队长球衣胸前号码下有一条8×2cm的下划线。[规则4.3.4]'},
+{id:314,tags:['规则'],tagType:'rule',question:'一支队的教练组最多包括几名助理教练？',options:['1名','2名','3名','4名'],answer:1,explain:'一支队可有一名教练和最多两名助理教练。[规则4.1.1]'},
+
+// ---- 得分与比赛格式 (Rule 6-7) ----
+{id:315,tags:['规则'],tagType:'rule',question:'一局比赛（决胜局除外）需要多少分才能获胜？',options:['21分','25分','15分','30分'],answer:1,explain:'一局比赛先得25分且领先2分者获胜。[规则6.2]'},
+{id:316,tags:['规则'],tagType:'rule',question:'决胜局（第5局）需要多少分才能获胜？',options:['25分','21分','15分','12分'],answer:2,explain:'决胜局先得15分且领先2分者获胜。[规则6.3.2]'},
+{id:317,tags:['规则'],tagType:'rule',question:'采用Rally Point System（每球得分制）时，接发球方赢得一球后获得什么？',options:['仅获得发球权','获得1分和发球权','仅获得1分','获得2分'],answer:1,explain:'接发球方赢得一球后得1分并获得发球权，同时按顺时针轮转。[规则6.1.3]'},
+{id:318,tags:['规则'],tagType:'rule',question:'一场比赛采用几局几胜制？',options:['3局2胜','5局3胜','7局4胜','4局3胜'],answer:1,explain:'比赛采用5局3胜制。[规则6.3.1]'},
+{id:319,tags:['规则'],tagType:'rule',question:'如果一支队伍弃权，比分如何判定？',options:['0-2 和 0-25','0-3 和 0-25','0-3 和 0-15','1-3 和 25-0'],answer:1,explain:'弃权队伍以0-3输掉比赛，每局0-25。[规则6.4.1]'},
+
+// ---- 上场队员名单与位置 (Rule 7) ----
+{id:320,tags:['规则'],tagType:'rule',question:'场上每队必须保持多少名队员？',options:['5名','6名','7名','4名'],answer:1,explain:'每队场上必须始终保持6名队员。[规则7.3.1]'},
+{id:321,tags:['规则'],tagType:'rule',question:'前排三个位置的编号顺序是什么？',options:['1-2-3','2-3-4','3-4-5','4-3-2'],answer:3,explain:'前排从左到右为4号位（前排左）、3号位（前排中）、2号位（前排右）。[规则7.4.1.1]'},
+{id:322,tags:['规则'],tagType:'rule',question:'后排三个位置的编号顺序是什么？',options:['4-5-6','5-6-1','6-1-2','1-2-3'],answer:1,explain:'后排从左到右为5号位（后排左）、6号位（后排中）、1号位（后排右）。[规则7.4.1.2]'},
+{id:323,tags:['规则'],tagType:'rule',question:'球队赢得发球权后轮转的方向是什么？',options:['逆时针','顺时针','由教练决定','不轮转'],answer:1,explain:'赢得发球权后按顺时针方向轮转一个位置。[规则7.6.2]'},
+{id:324,tags:['规则'],tagType:'rule',question:'位置错误的后果是什么？',options:['仅警告一次','对方得1分并获得发球权，位置必须纠正','罚1分','取消该局资格'],answer:1,explain:'位置错误导致对方得1分并获得发球权，位置必须纠正。[规则7.5.4]'},
+{id:325,tags:['规则'],tagType:'rule',question:'轮转错误的后果是什么？',options:['警告对方下次注意','对方得1分和发球权，轮转顺序必须纠正','直接扣分','罚一局'],answer:1,explain:'轮转错误导致对方得1分和发球权，轮转顺序必须纠正。[规则7.7.1]'},
+
+// ---- 比赛状态与击球 (Rule 8-9) ----
+{id:326,tags:['规则'],tagType:'rule',question:'球落在边线上应判为什么？',options:['界外球','界内球','重赛','由裁判决定'],answer:1,explain:'球的任何部分触及边线均为界内球。[规则8.3]'},
+{id:327,tags:['规则'],tagType:'rule',question:'球触到标志杆应判为什么？',options:['界内球','界外球','重新发球','比赛继续'],answer:1,explain:'球触及标志杆即为出界。[规则8.4.3]'},
+{id:328,tags:['规则'],tagType:'rule',question:'每支队伍最多可以击球几次将球击回对方场区？',options:['2次','3次','4次','5次'],answer:1,explain:'每队最多击球3次（拦网触球不计入）。[规则9.1]'},
+{id:329,tags:['规则'],tagType:'rule',question:'一名球员是否可以连续两次触球？',options:['可以','不可以（除拦网和第一击外）','任何时候都可以','只有自由人可以'],answer:1,explain:'球员不可连续触球两次，但拦网和第一次击球时例外。[规则9.1.1]'},
+{id:330,tags:['规则'],tagType:'rule',question:'"持球"犯规是指什么？',options:['球碰到身体','球被接住和/或抛出','球出界','球触网'],answer:1,explain:'持球是指球被接住和/或抛出，没有反弹。[规则9.3.3]'},
+{id:331,tags:['规则'],tagType:'rule',question:'"四次击球"犯规是指什么？',options:['一个球员连击四次','一支队伍击球四次才将球击回','发球四次失误','扣球四次出界'],answer:1,explain:'四次击球是指一支队伍击球四次才将球击回对方场区。[规则9.3.1]'},
+
+// ---- 网口 (Rule 10-11) ----
+{id:332,tags:['规则'],tagType:'rule',question:'球从标志杆外侧飞过进入对方无障碍区后，本方第一次击球能否将其捞回？',options:['能，只要不碰对方场地','不能，立即判出界','只能由自由人救回','必须用头顶回'],answer:0,explain:'球从外侧空间飞到对方无障碍区，第一次击球可以捞回，且必须再从同侧空间通过。[规则10.1.2]'},
+{id:333,tags:['规则'],tagType:'rule',question:'比赛中球员触网是否都算犯规？',options:['所有触网都算犯规','只有两标志杆之间触网且影响击球才算犯规','触网不算犯规','只有扣球时触网才算'],answer:1,explain:'在两标志杆之间触网且影响击球动作才算犯规。标志杆外触网不算犯规。[规则11.3.1]'},
+{id:334,tags:['规则'],tagType:'rule',question:'球员的脚可以越过中线进入对方场地吗？',options:['完全不可以','部分脚可以踩在中线上方，且不干扰对方','整个脚可以踏入对方场地','可以随意越过'],answer:1,explain:'脚可以部分接触或直接踩在中线上方，但不得完全踏入对方场地且不得干扰对方。[规则11.2.2.1]'},
+{id:335,tags:['规则'],tagType:'rule',question:'过网击球犯规是指什么？',options:['扣球时手碰到网','在对方空间内触球','拦网时手过网','球碰到球员头部'],answer:1,explain:'过网击球是指在对方空间内触球。拦网时手过网不犯规（前提是不干扰对方进攻）。[规则11.4.1]'},
+
+// ---- 发球 (Rule 12) ----
+{id:336,tags:['规则'],tagType:'rule',question:'发球时必须在裁判鸣哨后几秒内将球发出？',options:['5秒','8秒','10秒','12秒'],answer:1,explain:'裁判鸣哨后8秒内必须将球发出。[规则12.4.4]'},
+{id:337,tags:['规则'],tagType:'rule',question:'发球时球可以抛几次？',options:['最多3次','只能抛1次','最多2次','不限次数'],answer:1,explain:'只能抛球或放球1次。但允许在手中移动或拍球。[规则12.4.2]'},
+{id:338,tags:['规则'],tagType:'rule',question:'以下哪种属于发球掩护犯规？',options:['发球队员跳起发球','发球队队员挥手、跳跃或集体站立阻挡对方观察发球','发球队员站在底线后','发球擦网后落入对方场地'],answer:1,explain:'发球队队员通过挥手、跳跃或集体站立等方式阻挡对方观察发球和球路即为掩护犯规。[规则12.5]'},
+{id:339,tags:['规则'],tagType:'rule',question:'发球时，发球队员的脚能否踩端线？',options:['可以踩','不可以踩','只有跳发球不能踩','随裁判判定'],answer:1,explain:'发球击球瞬间，发球队员不得触及端线及端线以外的地面。[规则12.4.3]'},
+{id:340,tags:['规则'],tagType:'rule',question:'发球擦网后落入对方场区，应如何判罚？',options:['重新发球','比赛继续，有效球','判对方得分','判发球失误'],answer:1,explain:'发球触网后落入对方场区为有效球，比赛继续。[规则10.2结合规则12.6]'},
+
+// ---- 进攻 (Rule 13) ----
+{id:341,tags:['规则'],tagType:'rule',question:'前排队员可以在任何高度完成进攻性击球吗？',options:['是的，在任何高度都可以','不可以，只能在球低于网口时','只能在3米线后','只允许扣球不允许吊球'],answer:0,explain:'前排队员可以在本方空间内任何高度完成进攻性击球。[规则13.2.1]'},
+{id:342,tags:['规则'],tagType:'rule',question:'后排队员进攻性击球的限制是什么？',options:['不能进攻','起跳脚不能触及或越过3米进攻线','只能在底线后起跳','不能扣球只能吊球'],answer:1,explain:'后排队员起跳时脚不得触及或越过3米进攻线。[规则13.2.2.1]'},
+{id:343,tags:['规则'],tagType:'rule',question:'后排队员在前场区完成进攻性击球的条件是什么？',options:['球完全高于球网时才能击球','触球瞬间球必须有一部分低于球网上沿','任何时候都可以','只能用手传球'],answer:1,explain:'后排队员在前场区触球时，球必须有一部分低于球网上沿。[规则13.2.3]'},
+{id:344,tags:['规则'],tagType:'rule',question:'能否在对方发球时直接拦网扣球？',options:['可以','不可以——球在前场区且完全高于球网上沿时不能进攻','只有自由人可以','只有在后排可以'],answer:1,explain:'对方发球进入前场区且完全高于球网时，不得直接进攻。[规则13.2.4]'},
+
+// ---- 拦网 (Rule 14) ----
+{id:345,tags:['规则'],tagType:'rule',question:'哪些球员可以完成拦网？',options:['所有6名场上队员','只有前排队员','只有后排队员','只有自由人'],answer:1,explain:'只有前排队员可以完成拦网。[规则14.1.1]'},
+{id:346,tags:['规则'],tagType:'rule',question:'拦网触球是否计入三次击球次数？',options:['计入1次','不计入，拦网后仍有3次击球','计入2次','由裁判判定'],answer:1,explain:'拦网触球不计入三次击球，拦网后该队仍有三次击球机会。[规则14.4.1]'},
+{id:347,tags:['规则'],tagType:'rule',question:'拦对方发球是否允许？',options:['允许','不允许','只允许单人拦网','允许但不计入击球次数'],answer:1,explain:'拦对方发球是犯规。[规则14.5]'},
+
+// ---- 暂停与换人 (Rule 15) ----
+{id:348,tags:['规则'],tagType:'rule',question:'每局每队最多可以请求几次暂停？',options:['1次','2次','3次','4次'],answer:1,explain:'每局每队最多可请求2次暂停。[规则15.1]'},
+{id:349,tags:['规则'],tagType:'rule',question:'每次暂停的时长是多少？',options:['15秒','30秒','45秒','60秒'],answer:1,explain:'每次暂停持续30秒。[规则15.4.1]'},
+{id:350,tags:['规则'],tagType:'rule',question:'每局每队最多可以换人几次？',options:['4次','6次','8次','不限次数'],answer:1,explain:'每局每队最多可换人6次。[规则15.1]'},
+{id:351,tags:['规则'],tagType:'rule',question:'一名首发队员在一局中可以上场几次？',options:['只能上场一次','可以离场一次并再次上场一次','可以任意上下场','只能下场不能上场'],answer:1,explain:'首发队员在一局中可以离场一次并再次上场一次，且只能回到原位。[规则15.6.1]'},
+{id:352,tags:['规则'],tagType:'rule',question:'换人必须在什么区域内完成？',options:['在端线后','在换人区内（进攻线延长线至记录台）','在无障碍区内','在球网前'],answer:1,explain:'换人必须在换人区内完成。[规则15.10.1]'},
+
+// ---- 局间休息 (Rule 18) ----
+{id:353,tags:['规则'],tagType:'rule',question:'局间休息时间是多长？',options:['1分钟','2分钟','3分钟','5分钟'],answer:2,explain:'局间休息为3分钟。[规则18.1]'},
+
+// ---- 自由人 (Rule 19) ----
+{id:354,tags:['规则'],tagType:'rule',question:'自由人的球衣颜色与其他队员有何要求？',options:['颜色必须相同','颜色必须不同','可以相同也可以不同','没有要求'],answer:1,explain:'自由人的服装颜色必须与其他队员明显不同。[规则19.2]'},
+{id:355,tags:['规则'],tagType:'rule',question:'自由人能否完成进攻性击球？',options:['可以','不可以，如果触球时球完全高于球网上沿','只能在后排扣球','可以扣任何球'],answer:1,explain:'自由人如果在击球瞬间球完全高于球网上沿，则完成进攻性击球犯规。[规则19.3.1.2][规则13.3.5]'},
+{id:356,tags:['规则'],tagType:'rule',question:'自由人能否拦网或试图拦网？',options:['可以拦网','不能拦网也不能试图拦网','可以试图拦网但不能完成拦网','只能单人拦网'],answer:1,explain:'自由人不能拦网也不能试图拦网。[规则19.3.1.3][规则14.6.6]'},
+{id:357,tags:['规则'],tagType:'rule',question:'自由人在前场区用上手传球，队友能否在球高于球网时完成进攻性击球？',options:['可以','不可以——这属于犯规','只要不在3米线内就可以','只有二传手可以'],answer:1,explain:'自由人在前场区用上手传球时，队友不得在球高于球网时完成进攻。[规则19.3.1.4][规则13.3.6]'},
+
+// ---- 判罚 (Rule 20-21) ----
+{id:358,tags:['规则'],tagType:'rule',question:'第一次延误比赛的行为应受到什么处罚？',options:['直接判对方得分','延误警告（不扣分）','红牌','取消比赛资格'],answer:1,explain:'第一次延误给予"延误警告"，不扣分。[规则16.2.2]'},
+{id:359,tags:['规则'],tagType:'rule',question:'同一支队伍第二次及以后的延误行为应受到什么处罚？',options:['再次警告','延误判罚——对方得1分和发球权','黄牌警告','罚出场'],answer:1,explain:'第二次及以后延误给予"延误判罚"——对方得1分和发球权。[规则16.2.3]'},
+{id:360,tags:['规则'],tagType:'rule',question:'红牌表示什么处罚？',options:['警告','判罚（该局取消比赛资格）','取消全场比赛资格','罚1分'],answer:1,explain:'红牌表示该队员该局被取消比赛资格。[规则21.3]'},
+{id:361,tags:['规则'],tagType:'rule',question:'红黄牌同时出示表示什么？',options:['警告','取消该队员全场比赛资格','罚出场外','直接判负'],answer:1,explain:'红黄牌同时出示表示取消该队员全场比赛资格。[规则21.3]'},
+
+// ---- 比赛其他 ----
+{id:362,tags:['规则'],tagType:'rule',question:'正式比赛前的官方热身时间是多少？',options:['3分钟','6或10分钟','15分钟','20分钟'],answer:1,explain:'如之前有场地使用则6分钟，否则10分钟。FIVB赛事为10分钟。[规则7.2.1]'},
+{id:363,tags:['规则'],tagType:'rule',question:'比赛场地的照明最低标准是多少？',options:['100勒克斯','300勒克斯','500勒克斯','1000勒克斯'],answer:1,explain:'照明不低于300勒克斯。FIVB赛事不低于2000勒克斯。[规则1.6]'},
+{id:364,tags:['规则'],tagType:'rule',question:'FIVB赛事中，自由区在边线外的宽度要求是多少？',options:['3m','5m','6.5m','8m'],answer:1,explain:'FIVB赛事边线外自由区为5m，端线外为6.5m。[规则1.1]'},
+{id:365,tags:['规则'],tagType:'rule',question:'进攻线距离中线多少米？',options:['2m','3m','4m','5m'],answer:1,explain:'进攻线后沿距中线3m。[规则1.3.4]'},
+{id:366,tags:['规则'],tagType:'rule',question:'发球区的宽度是多少？',options:['6m','9m','12m','全场地宽度'],answer:1,explain:'发球区宽9m，即两端线之间的宽度。[规则1.4.2]'},
+{id:367,tags:['规则'],tagType:'rule',question:'比赛中断不超过多少小时可以在原场地继续比赛？',options:['2小时','4小时','6小时','8小时'],answer:1,explain:'比赛中止不超过4小时可以在原场地继续比赛。[规则17.3.2]'},
+{id:368,tags:['规则'],tagType:'rule',question:'同一队员受伤恢复时间最多为多少？',options:['1分钟','3分钟','5分钟','没有限制'],answer:1,explain:'受伤队员最多有3分钟恢复时间，同一队员每场比赛仅限一次。[规则17.1.2]'},
+{id:369,tags:['规则'],tagType:'rule',question:'同时换多人时，换人程序如何执行？',options:['可以一次全部上','必须逐一配对进行','自由人可同时上','只需在记录表注明'],answer:1,explain:'多名替补须同时进入换人区，然后逐对进行换人。[规则15.10.4]'},
+{id:370,tags:['规则'],tagType:'rule',question:'比赛场地的最低温度要求是多少？',options:['5°C','10°C','15°C','20°C'],answer:1,explain:'比赛场地最低温度不低于10°C。[规则1.5]'},
+];
+
+
+
+
+
+
+
+
+// ===== State =====
+const PER_ROUND = 10;
+let studentName = '';
+let startTime = null;
+let round = 1;
+let currentIdx = 0;
+let correctSet = new Set();
+let wrongSet = new Set();
+let selected = null;
+let answered = false;
+let shuffled = [];
+let currentShuffledOrder = [];
+
+function pad(n) { return n.toString().padStart(2, '0'); }
+
+function getNowStr() {
+  const d = new Date();
+  const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const timeStr = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  return { dateStr, timeStr, full: `${dateStr} ${timeStr}` };
+}
+
+// Login initialization
+function initLogin() {
+  const now = getNowStr();
+  document.getElementById('loginDate').textContent = now.dateStr;
+  document.getElementById('loginTime').textContent = now.timeStr;
+  document.getElementById('nameInput').addEventListener('input', function() {
+    document.getElementById('startBtn').disabled = this.value.trim().length < 1;
+  });
+  document.getElementById('nameInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && this.value.trim().length >= 1) startQuiz();
+  });
+}
+initLogin();
+
+function startQuiz() {
+  const name = document.getElementById('nameInput').value.trim();
+  if (!name) return;
+  studentName = name;
+  startTime = new Date();
+  document.getElementById('loginOverlay').classList.add('hidden');
+  document.getElementById('studentNameBadge').textContent = '👤 ' + studentName;
+    initRound1();
+  }
+
+function goHome() {
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('nameInput').value = '';
+  document.getElementById('startBtn').disabled = true;
+  studentName = '';
+  startTime = null;
+  const now = getNowStr();
+  document.getElementById('loginDate').textContent = now.dateStr;
+  document.getElementById('loginTime').textContent = now.timeStr;
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function initRound1() {
+  round = 1;
+  currentIdx = 0;
+  correctSet = new Set();
+  wrongSet = new Set();
+  document.getElementById('totalQCount').textContent = ALL_QUESTIONS.length;
+  shuffled = shuffle(ALL_QUESTIONS.map(q => q.id)).slice(0, PER_ROUND);
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('retryBtn').classList.add('hidden');
+  document.getElementById('wrongTopicList').classList.remove('show');
+  document.getElementById('questionCard').classList.remove('hidden');
+  document.getElementById('btnArea').classList.remove('hidden');
+  document.getElementById('roundLabel').textContent = '第 1 轮 · 随机抽10题';
+  document.getElementById('roundLabel').style.display = 'inline-block';
+  document.getElementById('roundTag').textContent = '📖 随机抽题';
+  document.getElementById('roundTag').className = '';
+  showQuestion();
+}
+
+function showQuestion() {
+  const total = shuffled.length;
+  const qid = shuffled[currentIdx];
+  const q = ALL_QUESTIONS.find(x => x.id === qid);
+
+  document.getElementById('qNumber').textContent = `第 ${currentIdx+1} 题（共 ${total} 题）· 题库共 ${ALL_QUESTIONS.length} 道`;
+
+  const tagMap = {bump:'tag-bump',set:'tag-set',spike:'tag-spike',serve:'tag-serve',block:'tag-block',defense:'tag-defense',footwork:'tag-footwork',tech:'tag-tech',tf:'tag-tech',multi:'tag-tech'};
+  const tagCls = tagMap[q.tagType] || 'tag-tech';
+  const tagNames = {bump:'垫球',set:'传球',spike:'扣球',serve:'发球',block:'拦网',defense:'防守',footwork:'步法',tech:'综合',tf:'判断',multi:'综合'};
+  const tagName = tagNames[q.tagType] || '技术';
+  const isMulti = q.multi === true;
+  document.getElementById('qTags').innerHTML = `<span class="tag ${tagCls}">${tagName}</span>${isMulti ? '<span class="multi-hint">多选题</span>' : ''}`;
+  document.getElementById('qText').textContent = q.question;
+
+  // Pad ALL options to same length
+  const optTexts = q.options.map(o => o);
+  const maxLen = Math.max(...optTexts.map(o => o.length));
+  const targetLen = Math.ceil((maxLen + 1) / 5) * 5;
+  const paddedOpts = optTexts.map(o => {
+    const padCount = targetLen - o.length;
+    if (padCount <= 0) return o;
+    return o + '<span class="pad-fill">' + '一'.repeat(padCount) + '</span>';
+  });
+
+  // Shuffle option order
+  const optCount = q.options.length;
+  const indices = Array.from({length: optCount}, (_, i) => i);
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  currentShuffledOrder = indices;
+
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML = '';
+  const letters = optCount === 2 ? ['✓', '✗'] : ['A', 'B', 'C', 'D'];
+  indices.forEach((origIdx, displayIdx) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    const lCls = isMulti ? 'letter square' : 'letter';
+    div.innerHTML = `<span class="${lCls}">${letters[displayIdx]}</span><span style="flex:1">${paddedOpts[origIdx]}</span>`;
+    div.dataset.origIdx = origIdx;
+    div.onclick = () => selectOption(origIdx, isMulti);
+    optDiv.appendChild(div);
+  });
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('nextBtn').textContent = '提交答案';
+  selected = isMulti ? [] : null;
+  answered = false;
+  updateProgress();
+  updateScore();
+}
+
+function selectOption(idx, isMulti) {
+  if (answered) return;
+  if (isMulti) {
+    const pos = selected.indexOf(idx);
+    if (pos >= 0) selected.splice(pos, 1);
+    else selected.push(idx);
+    document.querySelectorAll('.option').forEach((el) => {
+      const oi = parseInt(el.dataset.origIdx);
+      el.classList.toggle('selected', selected.indexOf(oi) >= 0);
+    });
+    document.getElementById('nextBtn').disabled = selected.length === 0;
+  } else {
+    selected = idx;
+    document.querySelectorAll('.option').forEach((el) => el.classList.toggle('selected', parseInt(el.dataset.origIdx) === idx));
+    document.getElementById('nextBtn').disabled = false;
+  }
+}
+
+function handleNext() {
+  if (!answered) submitAnswer();
+  else nextQuestion();
+}
+
+function submitAnswer() {
+  if ((Array.isArray(selected) && selected.length === 0) || (!Array.isArray(selected) && selected === null)) return;
+  answered = true;
+  const qid = shuffled[currentIdx];
+  const q = ALL_QUESTIONS.find(x => x.id === qid);
+  const isMulti = q.multi === true;
+  let correct = false;
+
+  const opts = document.querySelectorAll('.option');
+  if (isMulti) {
+    const ansArr = q.multiAnswer;
+    const sortedSelected = [...selected].sort();
+    const sortedAnswer = [...ansArr].sort();
+    correct = sortedSelected.length === sortedAnswer.length && sortedSelected.every((v,i) => v === sortedAnswer[i]);
+    opts.forEach((el) => {
+      el.classList.add('disabled');
+      const oi = parseInt(el.dataset.origIdx);
+      if (ansArr.indexOf(oi) >= 0) el.classList.add('show-correct');
+      if (selected.indexOf(oi) >= 0 && ansArr.indexOf(oi) < 0) el.classList.add('wrong');
+    });
+  } else {
+    correct = selected === q.answer;
+    opts.forEach((el) => {
+      el.classList.add('disabled');
+      if (parseInt(el.dataset.origIdx) === q.answer) el.classList.add('show-correct');
+      if (parseInt(el.dataset.origIdx) === selected && !correct) el.classList.add('wrong');
+    });
+  }
+
+  const fb = document.getElementById('feedback');
+  if (correct) {
+    fb.className = 'feedback correct show';
+    document.getElementById('fbText').textContent = '✅ 回答正确！';
+    correctSet.add(qid);
+  } else {
+    fb.className = 'feedback wrong show';
+    document.getElementById('fbText').textContent = '❌ 回答错误';
+    wrongSet.add(qid);
+  }
+  document.getElementById('fbExplain').textContent = q.explain;
+  document.getElementById('nextBtn').textContent = currentIdx < shuffled.length - 1 ? '下一题 →' : '查看成绩';
+  updateScore();
+}
+
+function nextQuestion() {
+  currentIdx++;
+  if (currentIdx >= shuffled.length) showResult();
+  else showQuestion();
+}
+
+function updateProgress() {
+  const total = shuffled.length;
+  const pct = (currentIdx / total * 100).toFixed(0);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `第 ${currentIdx+1} / ${total} 题`;
+}
+
+function updateScore() {
+  const total = shuffled.length;
+  const done = currentIdx + (answered ? 1 : 0);
+  const pct = (done / total * 100).toFixed(0);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressText').textContent = `第 ${Math.min(done, total)} / ${total} 题`;
+  document.getElementById('correctCount').textContent = correctSet.size;
+  document.getElementById('wrongCount').textContent = wrongSet.size;
+}
+
+function showResult() {
+  document.getElementById('questionCard').classList.add('hidden');
+  document.getElementById('btnArea').classList.add('hidden');
+  document.getElementById('resultCard').classList.add('show');
+
+  const total = shuffled.length;
+  const correct = correctSet.size;
+
+  // Show name and date/time
+  const endTime = new Date();
+  const endStr = getNowStr();
+  const duration = Math.round((endTime - startTime) / 1000);
+  const durMin = Math.floor(duration / 60);
+  const durSec = duration % 60;
+  document.getElementById('resultName').textContent = '👤 ' + studentName;
+  document.getElementById('resultDateTime').textContent = `📅 ${endStr.full}  ⏱ ${durMin}分${durSec}秒`;
+
+  document.getElementById('finalScore').textContent = correct;
+  document.getElementById('resultDetail').innerHTML = `答对 <span>${correct}</span> 题，答错 <span>${total - correct}</span> 题，正确率 <span>${(correct/total*100).toFixed(0)}%</span>`;
+
+  if (wrongSet.size > 0) {
+    document.getElementById('resultBreakdown').innerHTML = `薄弱环节涉及 ${wrongSet.size} 道技术题需要加强`;
+    document.getElementById('retryBtn').classList.remove('hidden');
+  } else {
+    document.getElementById('resultBreakdown').textContent = '全部答对，太棒了！🎉';
+  }
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('progressText').textContent = `${total} / ${total} 题 · 完成`;
+}
+
+function startRound2() {
+  if (wrongSet.size === 0) return;
+  round = 2;
+  currentIdx = 0;
+  shuffled = shuffle([...wrongSet]);
+  wrongSet = new Set();
+
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('retryBtn').classList.add('hidden');
+  document.getElementById('questionCard').classList.remove('hidden');
+  document.getElementById('btnArea').classList.remove('hidden');
+
+  document.getElementById('roundLabel').textContent = '第 2 轮 · 薄弱环节再测';
+  document.getElementById('roundLabel').style.display = 'inline-block';
+  document.getElementById('roundTag').textContent = '🎯 薄弱环节再测（仅错题）';
+  document.getElementById('roundTag').className = 'r2';
+
+  const wrongDiv = document.getElementById('wrongTopicList');
+  wrongDiv.innerHTML = `<strong>本轮针对 ${shuffled.length} 道错题进行再测：</strong>`;
+  wrongDiv.classList.add('show');
+  showQuestion();
+}
+
+function restart() {
+  goHome();
+}
+
+initRound1();
+</script>
+</body>
+</html>
